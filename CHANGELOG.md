@@ -2,6 +2,30 @@
 
 本專案的版本紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)。
 
+## [0.1.1] - 2026-09-07
+
+第一次拿真實資料跑完整流程（14 天、1256 則對話）後修掉的四個 bug。
+四個都是只有在真人紀錄上才會現形的問題，合成測試資料抓不到。
+
+### 修正
+
+- **系統注入被當成使用者的第一次交辦**：Codex 會把可安裝的 plugin 清單塞進 user message，
+  Claude Code 的 Stop hook 條件也以 user 身分注入。兩者都會變成案例裡的「第一次交辦」，
+  讓報告引用到雷蒙根本沒打過的字。已加入 `NOISE_PREFIX` / `NOISE_CONTAINS`。
+- **委派行為被誤報成零**：`DELEGATE_TOOLS` 只認 Claude Code 的 `Agent`/`Task`，
+  Codex 的 `spawn_agent`/`wait_agent`/`list_agents`/`followup_task` 一個都沒認到，
+  結果報告會說「沒有分工」，但紀錄裡明明有 44 次委派呼叫。已補齊 Codex 那組。
+- **第一則發言被算成修正**：「這個連結放錯了，你檢查一下」是交辦，不是修正 AI 這一輪的產出。
+  `correction_turns` 與案例抽樣都改成只算每則對話第一次交辦之後的發言，兩邊數字才對得起來。
+- **從指令挖出來的檔名夾帶 diff 內容**：`apply_patch` 的檔名後面會黏到換行與 diff，
+  產出過 `SKILL.md\n@@\n-version:` 這種假路徑。`note_write()` 現在會清乾淨並丟掉不像路徑的東西。
+
+### 已知限制（未修，記錄在案）
+
+- 修正訊號的關鍵詞是否定句（「不對」「錯了」）。有些人的修正方式是逐條重下規格而不是說「錯了」，
+  這種會被算成 0 次。數字本身不能拿來定級，必須回去讀案例原文——
+  這正是 [levels.md](references/levels.md#對照證據包欄位) 要求的讀法。
+
 ## [0.1.0] - 2026-09-07
 
 第一版。從有序設計陳敬儒的「有序 AI 工作力檢核 Prompt（通用版）」出發，

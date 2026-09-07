@@ -79,11 +79,15 @@ NOISE_PREFIX = (
     "<user-prompt-submit-hook", "<session-start-hook", "<ci-monitor-event",
     "Caveat:", "[Request interrupted", "[No response requested]", "API Error",
     "<bash-input>", "<bash-stdout>", "<bash-stderr>", ">>> TRANSCRIPT",
+    # Codex 會把可安裝的 plugin 清單塞進 user message；
+    # Claude Code 的 Stop hook 條件也是以 user 身分注入的。兩者都不是人打的字。
+    "<recommended_plugins", "<plugins>", "A session-scoped Stop hook",
 )
 NOISE_CONTAINS = (
     "# CLAUDE.md", "# AGENTS.md instructions", "<INSTRUCTIONS>",
     "<user_instructions>", "<environment_context>", "<permissions instructions>",
     "Codebase and user instructions are shown below",
+    "Here is a list of plugins that are available but not installed",
 )
 # 把逐字稿回灌自己的行濾掉：「[30] assistant: …」「[6] tool exec call: …」
 TRANSCRIPT_ECHO = re.compile(r"^\[\d+\]\s+(assistant|user|tool\b|system)")
@@ -134,7 +138,12 @@ DURABLE_PATH_PAT = re.compile(
     r"\.github/workflows/|settings\.json|/hooks/|crontab|launchd|\.plist|Dockerfile|Makefile)"
 )
 ARTIFACT_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
-DELEGATE_TOOLS = {"Agent", "Task", "SendMessage"}
+# 各家的委派工具名字都不一樣。只認 Claude Code 那組的話，
+# 在 Codex 上會誤報成「沒有分工」，但紀錄裡明明有 spawn_agent。
+DELEGATE_TOOLS = {
+    "Agent", "Task", "SendMessage",                                  # Claude Code
+    "spawn_agent", "wait_agent", "list_agents", "followup_task",     # Codex
+}
 
 HUMAN, AUTOMATION, SUBAGENT = "human", "automation", "subagent"
 
@@ -172,6 +181,13 @@ class Session(object):
             self.ended = ts
 
     def note_write(self, path):
+        # 從指令字串裡挖出來的檔名常黏到反引號、引號或 diff 內容，先清一次；
+        # 清完不像路徑（沒有副檔名也沒有斜線）就丟掉，不要讓髒資料進報告。
+        path = (path or "").strip().strip("`'\"").rstrip(",;:")
+        if not path or len(path) > 300:
+            return
+        if "." not in os.path.basename(path) and "/" not in path:
+            return
         self.files_written.add(path)
         if DURABLE_PATH_PAT.search(path):
             self.durable_writes.add(path)
@@ -422,6 +438,9 @@ def build_summary(sessions, since, until, sources):
     sub = [s for s in sessions if s.kind == SUBAGENT]
 
     h_msgs = [t for s in human for _, t in s.user_msgs]
+    # 修正只能發生在第一次交辦之後。第一則就算含「錯了」，那是在說明問題，
+    # 不是在修正 AI 這一輪的產出。案例抽樣用同一條規則，兩邊數字才對得起來。
+    h_followups = [t for s in human for _, t in s.user_msgs[1:]]
     h_tools, h_bash, h_files, h_durable, h_days = agg(human)
     a_tools, a_bash, a_files, a_durable, a_days = agg(auto)
 
@@ -466,9 +485,10 @@ def build_summary(sessions, since, until, sources):
             "top_tools": dict(h_tools.most_common(25)),
         },
         "behaviour_signals": {
-            "_note": "訊號＝出現過的次數。出現不等於做得好，沒出現不等於不會，判斷交給分析階段讀案例原文。",
+            "_note": ("訊號＝出現過的次數。出現不等於做得好，沒出現不等於不會，判斷交給分析階段讀案例原文。"
+                      "correction_turns 只算每則對話第一次交辦之後的發言。"),
             "spec_turns": count_hits(h_msgs, SPEC_HINTS),
-            "correction_turns": count_hits(h_msgs, CORRECTION_HINTS),
+            "correction_turns": count_hits(h_followups, CORRECTION_HINTS),
             "verify_turns": count_hits(h_msgs, VERIFY_HINTS),
             "delegate_turns": count_hits(h_msgs, DELEGATE_HINTS),
             "verify_commands": sum(1 for c in h_bash if VERIFY_CMD_PAT.search(c)),
@@ -512,7 +532,7 @@ def score_case(s):
     sc += 4 if s.files_written else 0
     sc += 5 if s.durable_writes else 0
     texts = [t for _, t in s.user_msgs]
-    if count_hits(texts, CORRECTION_HINTS):
+    if count_hits(texts[1:], CORRECTION_HINTS):
         sc += 6
     if count_hits(texts, SPEC_HINTS):
         sc += 4
@@ -540,7 +560,11 @@ def render_one_case(idx, s, with_content):
     if s.durable_writes:
         out.append("- 其中落在可複用位置：" + "、".join("`%s`" % redact(p) for p in sorted(s.durable_writes)[:6]))
     texts = [t for _, t in s.user_msgs]
-    corr = [t for t in texts if any(h.lower() in t.lower() for h in CORRECTION_HINTS)]
+    # 修正＝第一次交辦「之後」才發生的事。第一則本身不算修正，
+    # 否則「這個連結放錯了，你檢查一下」會同時被當成交辦與修正。
+    # automation 對話的「使用者發言」是程式寫的 system prompt，談不上修正。
+    corr = ([t for t in texts[1:] if any(h.lower() in t.lower() for h in CORRECTION_HINTS)]
+            if s.kind == HUMAN else [])
     if corr:
         out.append("- 出現修正發言 %d 次" % len(corr))
     out.append("")

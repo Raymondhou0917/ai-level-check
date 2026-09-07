@@ -2,13 +2,20 @@
 
 # AI 幾級了 ai-level-check
 
-### *讓 AI 來評估員工的 AI 能力，不是讓人來評估。*
+### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![No Ranking](https://img.shields.io/badge/no-ranking%20%C2%B7%20no%20percentile-lightgrey.svg)](references/privacy.md)
+
+<br>
+
+讓 AI 來評估你的 AI 能力，不是讓人來評估。<br>
+最準的方式，是讓 AI 去讀 AI 的使用紀錄。
+
+**你以為你是 T0，AI 可能認為你只是 T3。**
 
 <br>
 
@@ -17,7 +24,8 @@
 
 🧑‍💼 &nbsp;主管想知道團隊 AI 幾級了，只能問「你最近有在用嗎」，得到「有啊很好用」？<br>
 📄 &nbsp;做了一份 AI 能力問卷，大家照著自己想像中的樣子填，填完誰也不知道那是真的還假的？<br>
-🎓 &nbsp;上完 AI 課程，學員想知道自己到底進步了沒，只能憑感覺？
+🎓 &nbsp;上完 AI 課程，學員想知道自己到底進步了沒，只能憑感覺？<br>
+💼 &nbsp;面試時，別聽信「我最近都有在用 AI」，他的紀錄自己會說話。
 
 </td></tr>
 </table>
@@ -52,6 +60,7 @@
 只看得到週會上那三分鐘的口頭報告。
 他記不住你三個月前的樣子，只記得上禮拜那次做得不錯。
 而且他今天心情好不好，會影響他怎麼讀你交出來的東西。
+面試也一樣：別聽信「我最近都有在用 AI」，他的紀錄自己會說話。
 
 AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間、對你沒有意見。
 
@@ -62,7 +71,8 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 做完之後有沒有留下下次能用的東西。這些全部藏在對話紀錄裡，
 只有讀得完那些紀錄的東西，才評得出來。
 
-> **所以最準的評估方式，是讓 AI 去讀 AI 的使用紀錄。**
+> **讓 AI 來評估你的 AI 能力，不是讓人來評估。**<br>
+> **最準的方式，是讓 AI 去讀 AI 的使用紀錄。**
 
 ---
 
