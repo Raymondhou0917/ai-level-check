@@ -1,0 +1,20 @@
+# 證據包＝原始對話紀錄的抽取結果，預設不進版控。
+# 進 repo 的是「報告」，不是原始紀錄。理由見 references/privacy.md。
+evidence/
+*.evidence.json
+
+# 產出的報告：個人使用時通常也不進版控，
+# 要推進團隊 private repo 請走 scripts/publish.sh。
+# 用 reports/* 而不是 reports/，否則 .gitkeep 的例外規則會失效
+# （git 不會進到被忽略的目錄裡尋找例外）。
+reports/*
+!reports/.gitkeep
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

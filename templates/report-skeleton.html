@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 使用能力報告｜{{姓名}}｜{{期間}}</title>
+<!--
+  ai-level-check 報告書版型骨架
+  用法：整份複製，把 {{ }} 換掉，照 references/report-design.md 填內容。
+  規則：單檔、內嵌樣式、系統字型、SVG 圖表，不引用任何外部資源。
+-->
+<style>
+  :root{
+    --ink:#1c1c1e; --ink-2:#4a4a4f; --ink-3:#77777d;
+    --paper:#fdfcfa; --line:#e3e0da; --line-2:#f0eeea;
+    --accent:#2f5d62;          /* 低飽和主色 */
+    --warn:#b06a3b;            /* 需處理事項 */
+    --muted:#9a9aa0;           /* 資料不足 */
+    --serif:"Noto Serif TC","Songti TC",Georgia,serif;
+    --sans:"Noto Sans TC","PingFang TC","Hiragino Sans",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.75 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:56px 28px 96px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.35}
+  h1{font-size:2rem;margin:0 0 .4em}
+  h2{font-size:1.4rem;margin:3em 0 .6em;padding-top:1.2em;border-top:1px solid var(--line)}
+  h3{font-size:1.1rem;margin:2em 0 .5em}
+  p{margin:0 0 1em;max-width:38em}
+  a{color:var(--accent)}
+  small,.note{font-size:.86rem;color:var(--ink-3)}
+
+  .meta{font-size:.9rem;color:var(--ink-2);margin-bottom:2em}
+  .scope{border-left:3px solid var(--accent);padding:.2em 0 .2em 1em;margin:0 0 2.4em;color:var(--ink-2)}
+
+  /* 綜合評級 */
+  .verdict{display:flex;flex-wrap:wrap;gap:1.5em;align-items:baseline;
+           padding:1.4em 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+  .verdict .lv{font-family:var(--serif);font-size:2.6rem;line-height:1}
+  .verdict .name{font-size:1.1rem;color:var(--ink-2)}
+  .verdict .gap{flex:1 1 100%;font-size:.94rem;color:var(--ink-2);margin:0}
+
+  /* 六級階梯 */
+  .ladder{list-style:none;margin:1.6em 0;padding:0;border-top:1px solid var(--line-2)}
+  .ladder li{display:grid;grid-template-columns:5.5em 1fr;gap:1em;
+             padding:.7em 0;border-bottom:1px solid var(--line-2);color:var(--ink-3)}
+  .ladder li b{font-family:var(--serif);font-weight:600}
+  .ladder li.on{color:var(--ink);background:linear-gradient(90deg,rgba(47,93,98,.07),transparent)}
+  .ladder li.on b{color:var(--accent)}
+  /* 標記要接在文字後面，掛在 li 上會被 grid 推到下一列 */
+  .ladder li.on>span::after{content:"　← 本次可確認";font-size:.82rem;
+                            color:var(--accent);white-space:nowrap}
+
+  /* 分型 */
+  .persona{margin:2em 0;padding:1.2em 1.4em;border:1px solid var(--line);border-radius:2px}
+  .persona .code{font-family:var(--serif);font-size:1.6rem;letter-spacing:.12em;color:var(--accent)}
+  .persona .disclaimer{margin:.8em 0 0;font-size:.88rem;color:var(--ink-3)}
+
+  table{width:100%;border-collapse:collapse;margin:1.4em 0;font-size:.94rem}
+  th,td{text-align:left;vertical-align:top;padding:.62em .8em;border-bottom:1px solid var(--line-2)}
+  th{font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .scroll{overflow-x:auto}
+
+  .tag{display:inline-block;padding:.1em .6em;border-radius:2px;font-size:.8rem;
+       border:1px solid currentColor;white-space:nowrap}
+  .tag.high{color:var(--accent)} .tag.warn{color:var(--warn)} .tag.na{color:var(--muted)}
+
+  details{margin:1em 0;padding:.4em 0;border-top:1px solid var(--line-2)}
+  summary{cursor:pointer;font-size:.92rem;color:var(--ink-2)}
+  blockquote{margin:1em 0;padding-left:1em;border-left:2px solid var(--line);
+             color:var(--ink-2);font-size:.94rem}
+
+  nav.toc{margin:2.6em 0;font-size:.94rem}
+  nav.toc ol{margin:0;padding-left:1.4em;color:var(--ink-2)}
+
+  footer{margin-top:5em;padding-top:1.4em;border-top:1px solid var(--line);
+         font-size:.84rem;color:var(--ink-3)}
+
+  @media (max-width:640px){
+    .wrap{padding:32px 18px 64px}
+    h1{font-size:1.55rem}
+    .ladder li{grid-template-columns:1fr;gap:.2em}
+    .verdict .lv{font-size:2rem}
+  }
+  @media print{
+    body{background:#fff}
+    .wrap{max-width:none;padding:0}
+    h2{page-break-before:always;break-before:page}
+    h2:first-of-type{page-break-before:auto;break-before:auto}
+    details{display:block!important}
+    details>*{display:block!important}
+    summary{display:none}
+    table,figure,.persona{page-break-inside:avoid;break-inside:avoid}
+    @page{size:A4 portrait;margin:18mm 16mm}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ 總覽頁：一頁看懂 ═══════════ -->
+<header>
+  <h1>AI 使用能力報告</h1>
+  <p class="meta">{{姓名或代號}}　·　資料期間 {{起日}} – {{迄日}}　·　產出於 {{產出日期}}</p>
+</header>
+
+<!-- 1. 參考資料範圍：2–4 句，放在等級之前 -->
+<p class="scope">{{讀到哪些紀錄、涵蓋期間、缺哪些來源、這次能判斷什麼。期間不確定就明說。}}</p>
+
+<!-- 2. 綜合評級 -->
+<div class="verdict">
+  <span class="lv">{{LVn}}</span>
+  <span class="name">{{等級名稱}}</span>
+  <p class="gap">{{一句最主要的已確認落差，或尚缺的評估證據——兩者要分清楚}}</p>
+</div>
+
+<!-- 3. 等級量表：讀者不需回查文件就看得懂 -->
+<ol class="ladder">
+  <li><b>LV0</b><span>問答靠人品：該補條件、該查核的任務，沒處理就採用答案</span></li>
+  <li><b>LV1</b><span>換句話重問：察覺得到錯誤，靠換說法和多問幾次推進</span></li>
+  <li><b>LV2</b><span>單點式應用：能穩定完成單一類任務，判斷得出答案能不能用</span></li>
+  <li class="on"><b>LV3</b><span>精準下指令：給得出背景、範圍與完成標準；答錯時指得出具體問題</span></li>
+  <li><b>LV4</b><span>模組化使用：把有效做法固定成模板或代理，啟用前會實際測試</span></li>
+  <li><b>LV5</b><span>系統級營運：分工、驗收、例外處理、維護整合成實際運作的系統</span></li>
+</ol>
+
+<!-- 4. 等級說明 -->
+<p>{{符合目前等級的行為證據，附案例編號}}</p>
+<p>{{未達 LV5 時：下一級所缺的行為或證據，分成「已確認尚未做到」與「尚無證據可判斷」}}</p>
+<p><b>系統驗證狀態：</b>{{哪些已驗證、哪些尚未確認。完整四項見第 4 節}}</p>
+
+<!-- 5. 人物志分型 -->
+<div class="persona">
+  <div class="code">{{PVSE}}</div>
+  <p><b>{{稱號}}</b>　{{一句話}}</p>
+  <p class="note">判定依據：{{四個軸各自來自哪個案例}}</p>
+  <p class="disclaimer">分型是使用風格，不是能力高低。<code>QAOC</code> 不比 <code>PVSE</code> 差，
+  只是把 AI 用在不同的地方；等級與分型不可換算。</p>
+</div>
+
+<!-- 6. 精華摘要：五節各一條，附案例編號 -->
+<h3>精華摘要</h3>
+<ul>
+  <li>{{最能代表日常使用方式的一項觀察}}（案例 N）</li>
+  <li>{{最優先處理的一項不足}}（案例 N）</li>
+  <li>{{最有證據支持的一項強項}}（案例 N）</li>
+  <li>{{最關鍵的一項理解證據或缺口}}（案例 N）</li>
+  <li>{{最值得固化的一個做法}}（案例 N）</li>
+</ul>
+<p class="note">完整證據與判斷依據見後方詳細分析。</p>
+
+<nav class="toc">
+  <ol>
+    <li><a href="#s1">綱要瀏覽表</a></li>
+    <li><a href="#s2">優先改善事項</a></li>
+    <li><a href="#s3">AI 核心能力表</a></li>
+    <li><a href="#s4">工作系統與組織強度對照</a></li>
+    <li><a href="#s5">值得保留與制度化潛力</a></li>
+    <li><a href="#s6">最後結論</a></li>
+  </ol>
+</nav>
+
+<!-- ═══════════ 詳細分析 ═══════════ -->
+
+<h2 id="s1">一、綱要瀏覽表</h2>
+<div class="scroll">
+<table>
+<thead><tr>
+  <th>檢查項目</th><th>觀察到的做法</th><th>依據哪個案例</th>
+  <th>出現幾次或是否持續</th><th>已確認的不足</th><th>這個判斷有多少依據</th>
+</tr></thead>
+<tbody>
+  <tr><td>日常主要用途</td><td></td><td></td><td></td><td></td><td><span class="tag high">高</span></td></tr>
+  <tr><td>核心能力掌握</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>提問迭代方式</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>個人應用面向</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>制度化潛力</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>工作系統理解</td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>AI 對事業背景的掌握</td><td></td><td></td><td></td><td></td><td><span class="tag na">尚未觀察</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="s2">二、優先改善事項</h2>
+<h3>{{1. 具體不足}}　<span class="tag warn">{{確認不足 · 優先處理}}</span></h3>
+<ul>
+  <li><b>原始證據：</b>{{本人說了、做了或遺漏了什麼}}（案例 N）</li>
+  <li><b>判斷理由：</b>{{為什麼該情境需要不同做法；有哪些替代解釋}}</li>
+  <li><b>影響與優先級：</b>{{已觀察影響 vs 可能影響，分開寫}}</li>
+  <li><b>下次怎麼做：</b>{{對哪份資料或哪個流程做什麼}}</li>
+  <li><b>怎樣算有改善：</b>{{完成標準}}</li>
+</ul>
+<details>
+  <summary>原始摘錄</summary>
+  <blockquote>{{去識別化的問答摘錄}}</blockquote>
+</details>
+
+<h2 id="s3">三、AI 核心能力表</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>檢查哪項能力</th><th>目前做到什麼程度</th><th>依據哪個案例</th><th>做得好的地方</th><th>需要改善的地方</th></tr></thead>
+<tbody>
+  <tr><td>目標說明與任務拆解</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>能力邊界</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>背景資料</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>問答迭代</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>品質控制</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>工具運用</td><td></td><td></td><td></td><td></td></tr>
+  <tr><td>流程整合</td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="s4">四、工作系統與組織強度對照</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>哪項工作</th><th>已理解哪些要求</th><th>依據哪份資料或案例</th><th>還有哪些問題</th><th>這個判斷有多少依據</th></tr></thead>
+<tbody><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+</table>
+</div>
+
+<h3>系統驗證狀態</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>驗證項目</th><th>目前狀態</th><th>依據與結果，或缺少的資料</th></tr></thead>
+<tbody>
+  <tr><td>1. 只看文件能不能完成工作</td><td><span class="tag na">尚未驗證</span></td><td></td></tr>
+  <tr><td>2. 資料有錯或缺漏時怎麼處理</td><td></td><td></td></tr>
+  <tr><td>3. 沒人盯著能不能持續正確執行</td><td></td><td></td></tr>
+  <tr><td>4. 接手的人找不找得到負責人與驗收標準</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<p class="note">四項通過不會自動升為 LV5；未驗證也不自動降級或把等級封頂於 LV4。</p>
+
+<h2 id="s5">五、值得保留與制度化潛力</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>值得保留的做法</th><th>目前怎麼用</th><th>以後可以怎麼用</th><th>下一步先做什麼</th></tr></thead>
+<tbody><tr><td></td><td>{{一次性用法／日常輔助／可複用資產／制度化流程}}</td><td></td><td></td></tr></tbody>
+</table>
+</div>
+
+<h2 id="s6">六、最後結論</h2>
+<ol>
+  <li>{{最優先處理的已確認不足；若無，說明最重要的判斷限制}}</li>
+  <li>{{下一次同類工作可直接採用的一個改善動作；若提不出，明說}}</li>
+  <li>{{一個有證據支持、值得保留或固化的做法；沒有就省略這一項}}</li>
+</ol>
+
+<h3>可自願校正的判斷</h3>
+<p class="note">以下最多三項，只列會影響能力描述或原因歸屬的事項。不需要回覆。</p>
+<ul><li>{{…}}</li></ul>
+
+<footer>
+  由 <a href="https://github.com/Raymondhou0917/ai-level-check">ai-level-check</a> 產出．
+  本報告為觀察紀錄，不作為考績、升遷或人事決定的單一依據．
+  不含排名或百分位．資料來源與限制見本頁開頭。
+</footer>
+
+</div>
+</body>
+</html>
