@@ -96,6 +96,7 @@
 | `behaviour_signals.verify_commands` | 查核有沒有真的執行過 | 跑過測試不等於查核到位 |
 | `artifacts.durable_writes` | LV4 的候選證據：寫到 SKILL、scripts、workflows、設定檔 | 寫過一次不等於被複用，要找到再次使用的紀錄 |
 | `automation_evidence.sessions` | LV4–LV5 的候選證據：本人不在場時系統跑過 | 跑過不等於跑得對，更不等於有維護與交接 |
+| `automation_gears.observed` | LV4 的「固化成代理」具體化；兩顆以上咬合是 LV5 的常見形態 | **覆蓋度不是分數**。沒那個需求就不該用那顆齒輪；未觀察到只是期間快照，不等於不會。見 [automation-gears.md](automation-gears.md) |
 | `automation_evidence.subagent_sessions` | 有沒有分工的線索 | 派過子代理不等於分工設計良好 |
 | `human_usage.unique_tools` | 描述樣本 | **不得**當成能力指標 |
 | `sample_description_only.*` | 描述樣本 | **不得**當成能力指標 |

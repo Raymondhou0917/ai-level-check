@@ -147,6 +147,117 @@ DELEGATE_TOOLS = {
 
 HUMAN, AUTOMATION, SUBAGENT = "human", "automation", "subagent"
 
+# ---------------------------------------------------------------- 自動化齒輪
+#
+# 「有沒有讓 AI 自己動起來」是 LV4–LV5 的核心，但講「自動化」太籠統。
+# 這裡用五種驅動機制當共同語言，因為現代系統要讓一件事自己發生，
+# 底層就只有這五種扳機。五種都會在硬碟上留痕跡：改了什麼檔、跑了什麼指令、
+# 用了什麼工具，所以不需要另外蒐集資料，掃現有證據包就夠。
+#
+# 覆蓋度不是分數。沒有那個需求就不該用那顆齒輪，五顆全用過不比兩顆「好」。
+# 詳見 references/automation-gears.md。
+
+# 偵測必須分清楚「提到」與「做了」。`grep -n webhook` 只是在找字，
+# 不是在架 webhook；`cat > x.py <<EOF` 的 heredoc 內文更會整段誤中。
+# 所以每顆齒輪拆成三種各自獨立、都要求是「動作」的訊號：
+#   path — 寫出了讓它發生的那個檔（最強）
+#   cmd  — 跑了會改變系統狀態的動詞（不是查詢動詞）
+#   tool — 用了只能用來建這件事的工具
+GEAR_FIELDS = ("key", "name", "what", "path", "cmd", "tool")
+AUTOMATION_GEARS = [
+    dict(zip(GEAR_FIELDS, (
+        "schedule", "① 時間排程", "時間到就動：Cron、launchd、排程任務",
+        re.compile(r"((LaunchAgents|LaunchDaemons)/.*\.plist$|/crontab|\.cron(tab)?$)", re.I),
+        re.compile(r"\b(crontab\s+-[el]|launchctl\s+(load|bootstrap|enable|kickstart)|"
+                   r"schtasks\s+/create|systemctl\s+enable\s+\S+\.timer)\b", re.I),
+        re.compile(r"^(CronCreate|CronDelete|ScheduleWakeup|"
+                   r"mcp__scheduled-tasks__(create|update)_scheduled_task)$"),
+    ))),
+    dict(zip(GEAR_FIELDS, (
+        "webhook", "② 網路鉤子", "外部事件推過來：Webhook、n8n、表單與金流回呼",
+        re.compile(r"(webhook|/api/hooks?/|callback[-_]url)", re.I),
+        re.compile(r"\b(ngrok\s+http|n8n\s+(start|import)|cloudflared\s+tunnel)\b", re.I),
+        re.compile(r"^mcp__n8n"),
+    ))),
+    dict(zip(GEAR_FIELDS, (
+        "lifecycle", "③ 生命週期鉤子", "進出關卡時攔一下：SessionStart、pre-commit、pre-push",
+        re.compile(r"(\.claude/settings[^/]*\.json$|\.git/hooks/|/hooks/[^/]+\.(sh|py|js|ts)$|"
+                   r"(pre-commit|pre-push|commit-msg)(\.\w+)?$|\.pre-commit-config)", re.I),
+        re.compile(r"\b(git config\s+(--\S+\s+)?core\.hooksPath|pre-commit\s+install|"
+                   r"husky\s+(install|add))\b", re.I),
+        None,
+    ))),
+    dict(zip(GEAR_FIELDS, (
+        "cicd", "④ 持續整合部署", "推上去就自動測試打包上線：GitHub Actions、Zeabur、Vercel",
+        re.compile(r"(\.github/workflows/.*\.ya?ml$|\.gitlab-ci\.ya?ml$|"
+                   r"(^|/)Dockerfile$|(^|/)(zeabur|vercel|netlify)\.json$)", re.I),
+        re.compile(r"\b(gh\s+workflow\s+(run|enable)|vercel\s+(--prod|deploy)|"
+                   r"netlify\s+deploy|docker\s+(build|push)|fly\s+deploy)\b", re.I),
+        re.compile(r"^mcp__zeabur__(deploy|create-service|get-build-logs|redeploy)"),
+    ))),
+    dict(zip(GEAR_FIELDS, (
+        "watchdog", "⑤ 守護與心跳", "倒下自動拉起、定時回報還活著：pm2、KeepAlive、healthcheck",
+        re.compile(r"(watchdog|heartbeat|health-?check|keep-?alive)", re.I),
+        re.compile(r"\b(pm2\s+(start|restart|save|startup)|supervisorctl\s+(start|restart)|"
+                   r"systemctl\s+restart)\b", re.I),
+        re.compile(r"^(Monitor|mcp__firecrawl__firecrawl_monitor_(create|run))$"),
+    ))),
+]
+
+
+def cmd_action(cmd):
+    """只留下指令真正執行的那一段：砍掉 heredoc 內文與管線後面的長文字。
+
+    `cat > foo.py <<'EOF' …整份程式碼…` 會讓後面的內容整段誤中關鍵字，
+    所以在第一個 `<<` 切斷，只看前面那個動詞。
+    """
+    return (cmd or "").split("<<")[0][:240]
+
+
+def scan_gears(sessions):
+    """掃五種自動化齒輪的痕跡。只回答「有沒有做過」，不回答「做得好不好」。
+
+    掃的三個面都是已經蒐集好的資料，不額外讀任何檔案。
+    """
+    found = {g["key"]: {"seen_in": set(), "evidence": []} for g in AUTOMATION_GEARS}
+
+    for s in sessions:
+        corpus = ([("寫檔", p, "path") for p in s.files_written]
+                  + [("指令", cmd_action(c), "cmd") for c in s.bash_cmds]
+                  + [("工具", t, "tool") for t in s.tools])
+        for g in AUTOMATION_GEARS:
+            slot = found[g["key"]]
+            for label, text, field in corpus:
+                pat = g[field]
+                if not (pat and text and pat.search(text)):
+                    continue
+                slot["seen_in"].add(s.kind)
+                if len(slot["evidence"]) < 5:
+                    item = "%s：`%s`" % (label, excerpt(text, 120))
+                    if item not in slot["evidence"]:
+                        slot["evidence"].append(item)
+                break   # 同一則對話同一顆齒輪只記一次
+
+    out = {
+        "_note": (
+            "覆蓋度不是分數，也不排名。沒有那個需求就不該用那顆齒輪，"
+            "五顆全用過不比兩顆好。某顆沒出現只代表本期間未觀察到，不代表不會。"
+            "偵測只認「做了」的動作（寫出設定檔、跑了會改變系統狀態的指令、"
+            "用了只能用來建這件事的工具），不認「提到」。判準見 references/automation-gears.md。"
+        ),
+        "observed": [], "not_observed": [], "detail": {},
+    }
+    for g in AUTOMATION_GEARS:
+        slot = found[g["key"]]
+        seen = sorted(slot["seen_in"])
+        out["detail"][g["key"]] = {
+            "name": g["name"], "what": g["what"],
+            "seen_in": seen, "evidence": slot["evidence"],
+        }
+        (out["observed"] if seen else out["not_observed"]).append(g["key"])
+    out["observed_count"] = len(out["observed"])
+    return out
+
 
 # ---------------------------------------------------------------- 資料結構
 
@@ -514,6 +625,7 @@ def build_summary(sessions, since, until, sources):
             "durable_writes": sorted(redact(p) for p in a_durable)[:20],
             "subagent_sessions": len(sub),
         },
+        "automation_gears": scan_gears(sessions),
         "sample_description_only": {
             "_note": "只描述樣本長相，不評分。短提問不是弱點，長提問也不是能力。",
             "user_msg_len_p50": pct(0.5),
@@ -677,6 +789,27 @@ def render_metrics(s):
         L += ["驅動入口：" + "、".join("`%s`" % x for x in au["distinct_entrypoints"]), ""]
     if au["top_tools"]:
         L += ["常用工具：" + "、".join("%s×%d" % (k, v) for k, v in au["top_tools"].items()), ""]
+
+    g = s["automation_gears"]
+    L += ["## 自動化齒輪覆蓋度", "", "> %s" % g["_note"], ""]
+    L += ["本期間觀察到 %d／5 顆齒輪。" % g["observed_count"], ""]
+    L += ["| 齒輪 | 這顆在做什麼 | 本期間 | 在哪看到 |", "| :-- | :-- | :-- | :-- |"]
+    for key, d0 in g["detail"].items():
+        seen = d0["seen_in"]
+        status = "**已觀察到**" if seen else "未觀察到"
+        where = "、".join(seen) if seen else "—"
+        L.append("| %s | %s | %s | %s |" % (d0["name"], d0["what"], status, where))
+    L.append("")
+    for key, d0 in g["detail"].items():
+        if d0["evidence"]:
+            L.append("**%s** 的證據：" % d0["name"])
+            L.append("")
+            for e in d0["evidence"]:
+                L.append("- %s" % e)
+            L.append("")
+    if g["not_observed"]:
+        L += ["未觀察到的齒輪只代表本期間沒讀到痕跡。要判斷「是不需要」還是「不會」，"
+              "得看那個人的工作有沒有對應的複用需求——這一題證據包答不了，交給分析階段。", ""]
 
     d = s["sample_description_only"]
     L += ["## 樣本長相（只描述，不評分）", ""]

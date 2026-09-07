@@ -5,7 +5,7 @@
 ### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.1-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.2.0-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![No Ranking](https://img.shields.io/badge/no-ranking%20%C2%B7%20no%20percentile-lightgrey.svg)](references/privacy.md)
@@ -14,8 +14,6 @@
 
 讓 AI 來評估你的 AI 能力，不是讓人來評估。<br>
 最準的方式，是讓 AI 去讀 AI 的使用紀錄。
-
-**你以為你是 T0，AI 可能認為你只是 T3。**
 
 <br>
 
@@ -167,6 +165,35 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 
 完整判準與「證據包欄位 → 能支持什麼」對照表見 [references/levels.md](references/levels.md)。
 
+### 自動化齒輪：離開鍵盤之後，還有沒有事情在發生
+
+「有沒有做自動化」問得太籠統，答案永遠是「有啊我有用」。
+所以拆成五顆具體的齒輪——現代系統要讓一件事自己發生，底層就只有這五種扳機：
+
+```
+你要讓什麼事自己發生？
+│
+├─►「每天特定時間、每隔幾小時做一次」        └── ① 時間排程　Cron / launchd
+├─►「外部一有動靜（填表、刷卡、留言）就處理」 └── ② 網路鉤子　Webhook / n8n
+├─►「打開 AI、git commit 的瞬間強制插隊」     └── ③ 生命週期鉤子　SessionStart / pre-commit
+├─►「推上 GitHub 就自動測試打包上線」         └── ④ 持續整合部署　Actions / Zeabur
+└─►「機器人當掉自動拉起、死了通知我」         └── ⑤ 守護與心跳　pm2 / KeepAlive
+```
+
+五顆都在硬碟上留痕跡——寫了什麼檔、跑了什麼指令、用了什麼工具——
+所以不用填任何表，掃現有紀錄就查得到。
+
+> **覆蓋度不是分數。** 五顆全用過不比兩顆好；一個內容工作者只需要 ① 和 ②，
+> 硬去搞 ④ 只是浪費時間。**未觀察到也不等於不會**——齒輪是期間快照，
+> 三個月前設好一直穩定在跑的東西，這期間根本不會被動到。
+
+實作時踩到的坑值得寫出來：第一版偵測直接關鍵字掃指令，結果 5 顆全中，
+但證據長這樣——`rg -n -i "…webhook…"`。那是在**搜尋** webhook，不是在**架** webhook。
+收緊成「只認做了、不認提到」之後，同一批資料變成 3／5，每顆都指得出真實 artifact。
+**會誤報的偵測器比沒有偵測器更危險**，因為它產出的是看起來有根據的假證據。
+
+判準、偵測規則與課程用法見 [references/automation-gears.md](references/automation-gears.md)。
+
 ### 另外還有四項系統驗證（跟等級分開算）
 
 等級回答「已展現什麼用法」，系統驗證回答「這套做法哪些部分**真的被測過**」：
@@ -275,6 +302,7 @@ ai-level-check/
 ├── references/
 │   ├── levels.md                   LV0–LV5 判準 ＋ 證據包欄位對照表
 │   ├── evidence-rules.md           證據歸屬、公平判斷、四種判定量表、七項核心能力
+│   ├── automation-gears.md         五種自動化齒輪的判準與偵測規則
 │   ├── personas.md                 16 型人物志
 │   ├── log-sources.md              各家紀錄格式的實測文件
 │   ├── report-design.md            兩層報告結構與 HTML 規範
