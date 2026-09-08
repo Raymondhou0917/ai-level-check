@@ -63,6 +63,28 @@ C 型常見於行銷、企劃、客服、寫作場景，那裡本來就不需要
 
 ---
 
+## 16 型四組圖解
+
+依「查核」與「動手」兩軸分成四組，再看每組的交辦與沉澱習慣。分型是風格，不是分數；完整定義與判準以本文文字為準。
+
+### 動手，也會驗（VE）
+
+![動手，也會驗：PVSE 系統建築師、PVOE 精準特工、QVSE 邊做邊修的工程腦、QVOE 直覺實驗家](../assets/personas/ve-verify-execute.png)
+
+### 動手，但不驗（AE）
+
+![動手，但不驗：PASE 自動化狂人、PAOE 效率外包客、QASE 一把梭、QAOE 許願池](../assets/personas/ae-adopt-execute.png)
+
+### 只聊天，但會查（VC）
+
+![只聊天，但會查：PVSC 流程設計者、PVOC 求證派、QVSC 好奇查證家、QVOC 抬槓辯論家](../assets/personas/vc-verify-chat.png)
+
+### 只聊天，直接用（AC）
+
+![只聊天，直接用：PASC 交辦型主管、PAOC 需求規格官、QASC 靈感速記員、QAOC 閒聊夥伴](../assets/personas/ac-adopt-chat.png)
+
+---
+
 ## 16 型型錄
 
 每型固定四欄：一句話、典型行為、常見盲點、下一步先做什麼。
