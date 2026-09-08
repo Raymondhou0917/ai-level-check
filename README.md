@@ -1,3 +1,5 @@
+**繁體中文** · [English](README.en.md)
+
 <div align="center">
 
 # AI 幾級了 ai-level-check
@@ -5,9 +7,10 @@
 ### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.2-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.3-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
+[![en](https://img.shields.io/badge/en-English-1b6ca8.svg)](README.en.md)
 [![No Ranking](https://img.shields.io/badge/no-ranking%20%C2%B7%20no%20percentile-lightgrey.svg)](references/privacy.md)
 
 <br>
@@ -73,14 +76,6 @@
 | [Demo 1 · LV1](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv1.html) | 換句話重問 | 只用網頁版聊天，覺得不對就再問一次 |
 | [Demo 2 · LV3](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html) | 精準下指令 | 交代清楚、會指出錯、會驗證，還沒留下模板 |
 | [Demo 3 · LV4](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv4.html) | 模組化使用 | 做法寫成 skill，有一點排程，系統還沒自己跑 |
-
-本機：
-
-```bash
-python3 -m http.server 8767 --directory docs
-```
-
-然後打開 http://127.0.0.1:8767/ （預設 Demo 2）。
 
 ---
 
@@ -376,7 +371,7 @@ ai-level-check/
 │   └── privacy.md                  三條紅線與導入邊界
 ├── prompts/chat-paste.md           給 ChatGPT／Gemini／Claude 網頁版複製的檢核 Prompt
 ├── templates/report-skeleton.html  報告版型骨架（單檔、可列印 A4）
-├── docs/                           虛構示範站（LV1／LV3／LV4），給 GitHub Pages 用
+├── docs/                           虛構示範站（LV1／LV3／LV4）；公開網址見上方 Demo
 ├── evals/report-checklist.md       16 條「報告有沒有守規矩」的檢查
 └── install/                        Claude Code · Codex · Cursor · 團隊部署
 ```
@@ -475,7 +470,7 @@ python3 scripts/collect.py --days 14 --no-content
 
 ## 關於作者
 
-這個專案來自 [雷蒙（侯智薰）](https://github.com/Raymondhou0917)。
+這個專案來自 [雷蒙（侯智薰）](https://raymondhouch.com/)。
 我經營「雷蒙三十」，寫數位工作術、AI 應用、一人公司和超級個體的經營模式。
 
 ► 想認識更多關於我？
@@ -495,7 +490,7 @@ python3 scripts/collect.py --days 14 --no-content
 
 ## 致謝
 
-這套機制的起點，是 **有序設計的陳敬儒** 約我吃飯聊出來的。
+這套機制的起點，是 **[有序設計的陳敬儒](https://www.inorder.studio/about000)** 約我吃飯聊出來的。
 
 那天我們在聊一件事：公司要怎麼知道團隊的 AI 能力到哪裡？
 問卷不準，口頭報告更不準，因為人本來就評不準這件事。

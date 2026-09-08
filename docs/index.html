@@ -6,12 +6,12 @@
 <meta name="robots" content="index,follow">
 <meta name="ai-content-signal" content="search=yes, ai-input=yes, ai-train=yes">
 <meta name="description" content="AI 幾級了：讓 AI 去讀你電腦裡的使用紀錄，產出有案例、可追溯的能力報告。開源、免費，不是問卷也不是排名。">
-<title>AI 幾級了｜讓 AI 讀你的使用紀錄</title>
+<title>AI 幾級了｜你的 AI Agent 程度如何</title>
 <link rel="canonical" href="https://ai.lifehacker.tw/reports/ai-level-check-demo/">
 <link rel="sitemap" type="application/xml" href="https://ai.lifehacker.tw/reports/ai-level-check-demo/sitemap.xml">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:title" content="AI 幾級了｜讓 AI 讀你的使用紀錄">
+<meta property="og:title" content="AI 幾級了｜你的 AI Agent 程度如何">
 <meta property="og:description" content="掃本機 Claude Code、Codex、Antigravity 的對話紀錄，產出 LV0–LV5 報告。開源免費，不是問卷。">
 <meta property="og:url" content="https://ai.lifehacker.tw/reports/ai-level-check-demo/">
 <meta property="og:image" content="https://ai.lifehacker.tw/reports/ai-level-check-demo/screenshots/01-overview.jpg">
@@ -33,7 +33,7 @@
       "author": { "@id": "https://raymondhouch.com/#person" },
       "publisher": { "@id": "https://lifehacker.tw/#organization" },
       "datePublished": "2026-09-08",
-      "dateModified": "2026-09-08"
+      "dateModified": "2026-09-08T13:10+08:00"
     },
     {
       "@type": "SoftwareSourceCode",
@@ -78,11 +78,36 @@
 }
 </script>
 </head>
-<body>
+<body class="hub">
+<button class="toc-btn" id="toc-btn" type="button">☰ 章節目錄</button>
+<nav class="toc" id="toc" aria-label="示範與章節目錄">
+  <div class="t">示範切換</div>
+  <a class="demo current" href="index.html"><span class="tn">⌂</span>入口</a>
+  <a class="demo" href="lv1.html"><span class="tn">1</span>Demo 1 · LV1</a>
+  <a class="demo" href="lv3.html"><span class="tn">2</span>Demo 2 · LV3</a>
+  <a class="demo" href="lv4.html"><span class="tn">3</span>Demo 3 · LV4</a>
+  <div class="t">章節</div>
+  <a href="#what"><span class="tn">01</span>是什麼</a>
+  <a href="#not-a-test"><span class="tn">02</span>不是考試</a>
+  <a href="#levels"><span class="tn">03</span>六個等級</a>
+  <a href="#how"><span class="tn">04</span>怎麼跑</a>
+  <a href="#look"><span class="tn">05</span>長什麼樣子</a>
+  <a href="#privacy"><span class="tn">06</span>會不會上傳</a>
+  <a href="#persona"><span class="tn">07</span>16 型</a>
+  <a href="#vs-quiz"><span class="tn">08</span>跟測驗差在哪</a>
+  <a href="#who"><span class="tn">09</span>誰做的</a>
+</nav>
 <div class="wrap">
-<header>
+<header id="top">
   <h1>AI 幾級了</h1>
-  <p class="meta">開源工具　·　讓 AI 讀你電腦裡的使用紀錄　·　雷蒙（侯智薰）</p>
+  <p class="meta">
+    <a class="repo-link" href="https://github.com/Raymondhou0917/ai-level-check">
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+      開源工具（Skill）
+    </a>
+    <span class="meta-dot" aria-hidden="true">·</span>
+    你的 AI Agent 程度如何？讓 AI 來點評
+  </p>
 </header>
 
 <p class="lede">
@@ -92,22 +117,34 @@
 </p>
 
 <p class="scope">
-下面三份可以點進去捲的報告，是虛構示範，用來對照 LV1、LV3、LV4 會長什麼樣子。
+下面三張卡可以點進去。LV1、LV3、LV4 各一份虛構完整報告，用來對照會長什麼樣子。
 截圖是一份真的跑出來的報告。原始碼在 GitHub，MIT 授權，免費。
 </p>
 
-<div class="demo-cards">
-  <a href="lv1.html">
+<div class="demo-hint" aria-hidden="true">
+  <span class="chevron-flow">⌄</span>
+  <span class="chevron-flow" style="animation-delay:.18s">⌄</span>
+  <span class="chevron-flow" style="animation-delay:.36s">⌄</span>
+</div>
+<p class="demo-lead">點一張，看成果長什麼樣子</p>
+<div class="demo-cards" id="demos">
+  <a class="card-lift" href="lv1.html">
     <p class="lv">LV1</p>
-    <p>換句話重問。只用網頁聊天，覺得不對就再問一次。</p>
+    <p class="name">換句話重問</p>
+    <p>只用網頁聊天，覺得不對就再問一次。</p>
+    <span class="go">看這份示範報告<span class="go-arrow">→</span></span>
   </a>
-  <a href="lv3.html">
+  <a class="card-lift" href="lv3.html">
     <p class="lv">LV3</p>
-    <p>精準下指令。交代清楚、會指出錯、會驗證，還沒留下模板。</p>
+    <p class="name">精準下指令</p>
+    <p>交代清楚、會指出錯、會驗證，還沒留下模板。</p>
+    <span class="go">看這份示範報告<span class="go-arrow">→</span></span>
   </a>
-  <a href="lv4.html">
+  <a class="card-lift" href="lv4.html">
     <p class="lv">LV4</p>
-    <p>模組化使用。做法寫成 skill，有一點排程，系統還沒自己跑。</p>
+    <p class="name">模組化使用</p>
+    <p>做法寫成 skill，有一點排程，系統還沒自己跑。</p>
+    <span class="go">看這份示範報告<span class="go-arrow">→</span></span>
   </a>
 </div>
 
@@ -207,9 +244,9 @@ LV4 和 LV5 一定要有實作證據。光有構想、自述或 AI 宣稱完成�
 同一個 ai.lifehacker.tw 底下，還有 AI Agent 學習站與陪跑課。那些頁面是課程、關卡與報名；關卡題目爬蟲讀不到。這頁是開源工具的說明：搜「AI 幾級了」應該先落到這裡，看等級怎麼判、報告長什麼樣子、紀錄會不會上傳，再決定要不要看三份虛構示範，或去本機跑自己的報告。
 </p>
 
-<h2 id="who">誰做的</h2>
+<h2 id="who">誰做的／出處</h2>
 <p>
-這套工具由雷蒙（侯智薰）開源。起點是有序設計的陳敬儒約吃飯時聊到：公司要怎麼知道團隊的 AI 能力到哪裡。問卷不準，口頭報告更不準。結論是應該讓 AI 去讀 AI 的使用紀錄。他先做了一份可以貼給 AI 的檢核 Prompt；後面補上本機真實紀錄、人機分流、人物志分型，以及用 git 把每一期釘住。
+這套工具由 <a href="https://raymondhouch.com/" rel="noopener">雷蒙（侯智薰）</a> 開源。起點是 <a href="https://www.inorder.studio/about000" rel="noopener">有序設計的陳敬儒</a> 約吃飯時聊到：公司要怎麼知道團隊的 AI 能力到哪裡。問卷不準，口頭報告更不準。結論是應該讓 AI 去讀 AI 的使用紀錄。他先做了一份可以貼給 AI 的檢核 Prompt；後面補上本機真實紀錄、人機分流、人物志分型，以及用 git 把每一期釘住。
 </p>
 <p>
 專案永遠免費。誤判可以開 issue。工程師、行銷、設計、客服、會計的用法長得不一樣，各行各業把「用得好」在自己職能裡長什麼樣子補進來，它才會變成真的通用。
@@ -226,5 +263,6 @@ LV4 和 LV5 一定要有實作證據。光有構想、自述或 AI 宣稱完成�
   <p>這份頁面由雷蒙三十發布，用來說明開源專案「AI 幾級了」。示範報告是虛構資料。觀察報告不能單獨當作人事決定的依據。測驗站的關卡內容爬蟲讀不到，方法寫在這頁的正文裡。</p>
 </footer>
 </div>
+<script src="assets/demo.js"></script>
 </body>
 </html>
