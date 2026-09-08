@@ -72,7 +72,7 @@ The live demo is in Traditional Chinese. The layout, levels, and how a report ar
 </tr>
 </table>
 
-The screenshots are the author’s own two weeks. The clickable demos are fictional: three made-up people, three levels.
+The screenshots are real fragments from a report Raymond ran himself. The [demo site](https://ai.lifehacker.tw/reports/ai-level-check-demo/) is simulated data.
 
 | Demo | Level | What this person does |
 | :-- | :-- | :-- |
@@ -80,7 +80,36 @@ The screenshots are the author’s own two weeks. The clickable demos are fictio
 | [Demo 2 · LV3](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html) | Precise delegation | Clear briefs, names the error, verifies; no reusable template yet |
 | [Demo 3 · LV4](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv4.html) | Modular use | The method is a skill, a little scheduling; the system does not run itself |
 
-When you install the skill, your own agent writes the report on your machine and opens it locally. You do not need to host a demo yourself.
+---
+
+## How do I use「AI 幾級了」?
+
+Two kinds of people, two paths. Processing happens **on your machine**, or in the web chat you already use. **Nothing is sent to this project, and nothing is sent to Raymond.**
+
+### 1. You already have an AI agent
+
+Claude Code, Codex, Cursor, Antigravity: install the skill, then say “run an AI-usage review for the last two weeks.” It scans logs and writes the report on your computer.
+
+```bash
+git clone https://github.com/Raymondhou0917/ai-level-check.git ~/ai-level-check
+ln -s ~/ai-level-check ~/.claude/skills/ai-level-check
+```
+
+Other entry points: [Claude Code](install/claude-code.md), [Codex](install/codex.md), [Cursor](install/cursor.md).
+
+Numbers only, no full report:
+
+```bash
+python3 ~/ai-level-check/scripts/collect.py --days 14
+```
+
+Standard library only. No packages, no network, no upload.
+
+### 2. You only use ChatGPT or Gemini in the browser
+
+Open [prompts/chat-paste.md](prompts/chat-paste.md), copy the prompt, paste it into the web chat, then paste your recent threads.
+
+This path can only judge what you pasted. It usually tops out at LV3. Not weaker — the browser cannot see the system on disk.
 
 ---
 
@@ -132,44 +161,11 @@ All of that lives in the dialogue log. Only something that can finish reading th
 
 ## What it reads, and what it writes
 
-```
-  Your computer (the logs are already here)
-  ┌────────────────────────────────────────┐
-  │  ~/.claude/projects/*.jsonl            │
-  │  ~/.codex/sessions/**/*.jsonl          │
-  │  ~/.gemini/antigravity/**/*.db (if any)│
-  └───────────────┬────────────────────────┘
-                  │  collect.py (local only; no network, no upload)
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  evidence pack  evidence/              │
-  │  ├ summary.json  countable events      │
-  │  ├ metrics.md    human-readable        │
-  │  └ cases.md      sampled cases + quotes│
-  └───────────────┬────────────────────────┘
-                  │  the agent reads the pack + criteria in references/
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  Report (single HTML file)             │
-  │  ├ overview  level / checks / persona  │
-  │  └ six sections, each pointing at cases│
-  └───────────────┬────────────────────────┘
-                  │  publish.sh (team mode; only after the person confirms)
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  company private repo                  │
-  │  git history = the record; once pushed │
-  │  it cannot be quietly rewritten        │
-  └────────────────────────────────────────┘
-```
+The local skill scans agent logs already on your disk and writes a single HTML report. The script does not go online. Raw threads are not uploaded to this project. Raymond cannot see them.
 
-Three deliberate constraints:
+If you already use a cloud LLM, those chats already go through that vendor’s cloud. This tool does not open a second path that sends data to us.
 
-- **Raw logs never leave the machine.** Only the report is uploaded if you choose. `evidence/` is in `.gitignore`.
-- **Everyone runs it themselves and decides whether to push.** There is no central scan. A manager cannot take someone else’s raw threads.
-- **Once pushed, it cannot be deleted into a prettier version.** That is where the credibility comes from.
-
-The skill files and scoring criteria are written in Traditional Chinese. Any capable agent can follow them.
+The pipeline diagram is in [docs/how-it-works.md](docs/how-it-works.md). Privacy rules: [references/privacy.md](references/privacy.md). Skill files are in Traditional Chinese; any capable agent can follow them.
 
 ---
 
@@ -312,14 +308,9 @@ What to tell a team before rollout: [references/privacy.md](references/privacy.m
 
 ---
 
-## Install
+## Install notes by platform
 
-Two ways to run it. How much you can see sets the usual ceiling:
-
-| | Who | How | What you usually see |
-| :-- | :-- | :-- | :-- |
-| **Local skill** | Claude Code, Codex, Cursor, Antigravity | Install, then say “run an AI-usage review for the last two weeks” | LV0–LV5, including automation and multi-home setups |
-| **Paste mode** | ChatGPT / Gemini / Claude in the browser only | Open [prompts/chat-paste.md](prompts/chat-paste.md), copy the prompt, paste your own threads | Usually LV2–LV3. Not weaker — the browser cannot see the system on disk |
+How to run it is above. Extra notes per entry point:
 
 | Platform | Doc |
 | :-- | :-- |
@@ -328,27 +319,6 @@ Two ways to run it. How much you can see sets the usual ceiling:
 | Cursor / other agents | [install/cursor.md](install/cursor.md) |
 | Browser chat only | [prompts/chat-paste.md](prompts/chat-paste.md) |
 | Team rollout | [install/team-deploy.md](install/team-deploy.md) |
-
-Shortest path:
-
-```bash
-git clone https://github.com/Raymondhou0917/ai-level-check.git ~/ai-level-check
-ln -s ~/ai-level-check ~/.claude/skills/ai-level-check
-```
-
-Then in Claude Code:
-
-```
-Run an AI-usage review for the last two weeks.
-```
-
-Numbers only, no full report:
-
-```bash
-python3 ~/ai-level-check/scripts/collect.py --days 14
-```
-
-Standard library only. No packages, no network, no upload.
 
 ### Layout
 

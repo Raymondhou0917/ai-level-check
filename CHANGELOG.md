@@ -7,7 +7,7 @@
 ### 調整
 
 - **入口頁**：三張 Demo 卡改成可浮起的獨立按鈕，加上指路 chevron 與「看這份示範報告」；補上與報告頁同一套浮動 TOC；標題列改連 GitHub，作者只留在文末並加上出處連結。
-- **README**：拿掉本機 `http.server`，改指公開 Demo；新增英文 [`README.en.md`](README.en.md)。
+- **README**：拿掉本機 `http.server`，改指公開 Demo；新增英文 [`README.en.md`](README.en.md)。使用方式提前、分 Agent／網頁版兩條路；流程細節移到 [`docs/how-it-works.md`](docs/how-it-works.md)。
 
 ## [0.4.2] - 2026-09-08
 

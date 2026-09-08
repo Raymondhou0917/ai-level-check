@@ -69,13 +69,44 @@
 </tr>
 </table>
 
-截圖是雷蒙自己這兩週的紀錄。點進去的 Demo 則是編的：三個假人、三個等級，目錄可切 Demo 1／2／3。
+截圖是雷蒙自己執行的真實截圖片段。[Demo 站](https://ai.lifehacker.tw/reports/ai-level-check-demo/) 是模擬資料。
 
 | 示範 | 等級 | 這個人在做什麼 |
 | :-- | :-- | :-- |
 | [Demo 1 · LV1](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv1.html) | 換句話重問 | 只用網頁版聊天，覺得不對就再問一次 |
 | [Demo 2 · LV3](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html) | 精準下指令 | 交代清楚、會指出錯、會驗證，還沒留下模板 |
 | [Demo 3 · LV4](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv4.html) | 模組化使用 | 做法寫成 skill，有一點排程，系統還沒自己跑 |
+
+---
+
+## 如何使用「AI 幾級了」？
+
+兩種人，兩條路。處理都發生在**你自己的電腦**，或你本來就在用的那個網頁 Chat；**不會送到這個專案，也不會送到雷蒙這邊**。
+
+### 1. 已經有 AI Agent
+
+Claude Code、Codex、Cursor、Antigravity：把 skill 裝進去，對它說「幫我跑這兩週的 AI 使用檢核」。它在你這台電腦掃紀錄、寫報告。
+
+```bash
+git clone https://github.com/Raymondhou0917/ai-level-check.git ~/ai-level-check
+ln -s ~/ai-level-check ~/.claude/skills/ai-level-check
+```
+
+其他入口見 [Claude Code](install/claude-code.md)、[Codex](install/codex.md)、[Cursor](install/cursor.md)。
+
+只想先看數字、不要完整報告：
+
+```bash
+python3 ~/ai-level-check/scripts/collect.py --days 14
+```
+
+純標準庫，不用裝套件，不連網、不上傳。
+
+### 2. 只用網頁版 ChatGPT 或 Gemini
+
+打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製裡面的 Prompt，貼進網頁對話，再貼上你最近的對話。
+
+這條路只能評你貼進去的問答，通常最多到 LV3。不是比較弱，是網頁版看不到硬碟上的系統。
 
 ---
 
@@ -129,41 +160,11 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 
 ## 它會讀什麼、產出什麼
 
-```
-  你的電腦（紀錄本來就在這裡）
-  ┌────────────────────────────────────────┐
-  │  ~/.claude/projects/*.jsonl            │
-  │  ~/.codex/sessions/**/*.jsonl          │
-  │  ~/.gemini/antigravity/**/*.db（有才掃）│
-  └───────────────┬────────────────────────┘
-                  │  collect.py（純本機，不連網、不上傳）
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  證據包 evidence/                       │
-  │  ├ summary.json  可核對的發生次數        │
-  │  ├ metrics.md    人類可讀版             │
-  │  └ cases.md      抽樣案例＋原句摘錄      │
-  └───────────────┬────────────────────────┘
-                  │  AI 讀證據包 ＋ references/ 的判準
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  報告書（單檔 HTML）                     │
-  │  ├ 總覽頁    等級／驗證狀態／分型／摘要    │
-  │  └ 詳細分析  六節，每個判斷都指得出案例    │
-  └───────────────┬────────────────────────┘
-                  │  publish.sh（團隊模式，本人確認後才推）
-                  ▼
-  ┌────────────────────────────────────────┐
-  │  公司 private repo                      │
-  │  git 歷史 = 存證，推上去就改不掉          │
-  └────────────────────────────────────────┘
-```
+本機 skill 掃的是你電腦裡已經有的 agent 紀錄，產出一份單檔 HTML 報告。腳本不連網；原始對話不上傳到這個專案，雷蒙也看不到。
 
-三個刻意的設計：
+你如果本來就用雲端 LLM，對話本來就會經過那家的雲端。這套工具不會多開一條路，把資料送到我這邊。
 
-- **原始紀錄不離開本機。** 上傳的只有報告，`evidence/` 在 `.gitignore` 裡。
-- **每個人自己跑、自己決定推不推。** 沒有中央掃描，主管拿不到別人的原始對話。
-- **推上去就刪不掉。** 報告不能事後修飾，這是它有公信力的來源。
+流程圖、證據包、團隊推送見 [docs/how-it-works.md](docs/how-it-works.md)。隱私紅線見 [references/privacy.md](references/privacy.md)。
 
 ---
 
@@ -315,14 +316,9 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 
 ---
 
-## 安裝
+## 各平台安裝細節
 
-兩種跑法，資料能看到多少，等級上限就不一樣：
-
-| | 給誰 | 怎麼跑 | 通常能看到 |
-| :-- | :-- | :-- | :-- |
-| **本機 skill** | Claude Code、Codex、Cursor、Antigravity | 裝好後說「幫我跑這兩週的 AI 使用檢核」 | LV0–LV5，含自動化與多棲 |
-| **貼上模式** | 只用 ChatGPT／Gemini／Claude 網頁版 | 打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製 Prompt，再貼自己的對話 | 多半停在 LV2–LV3。不是比較弱，是網頁版看不到硬碟上的系統 |
+怎麼跑見上面「如何使用」。這裡只放各入口的補充：
 
 | 平台 | 文件 |
 | :-- | :-- |
@@ -331,27 +327,6 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 | Cursor / 其他 agent | [install/cursor.md](install/cursor.md) |
 | 只用網頁版 Chat | [prompts/chat-paste.md](prompts/chat-paste.md) |
 | 團隊部署 | [install/team-deploy.md](install/team-deploy.md) |
-
-最短路徑：
-
-```bash
-git clone https://github.com/Raymondhou0917/ai-level-check.git ~/ai-level-check
-ln -s ~/ai-level-check ~/.claude/skills/ai-level-check
-```
-
-然後在 Claude Code 裡說：
-
-```
-幫我跑這兩週的 AI 使用檢核
-```
-
-只想先看數字、不要完整報告：
-
-```bash
-python3 ~/ai-level-check/scripts/collect.py --days 14
-```
-
-純標準庫，不用裝任何套件，不連網、不上傳。
 
 ### 專案結構
 
@@ -371,7 +346,7 @@ ai-level-check/
 │   └── privacy.md                  三條紅線與導入邊界
 ├── prompts/chat-paste.md           給 ChatGPT／Gemini／Claude 網頁版複製的檢核 Prompt
 ├── templates/report-skeleton.html  報告版型骨架（單檔、可列印 A4）
-├── docs/                           虛構示範站（LV1／LV3／LV4）；公開網址見上方 Demo
+├── docs/                           虛構示範站（LV1／LV3／LV4）＋ [how-it-works.md](docs/how-it-works.md)
 ├── evals/report-checklist.md       16 條「報告有沒有守規矩」的檢查
 └── install/                        Claude Code · Codex · Cursor · 團隊部署
 ```
