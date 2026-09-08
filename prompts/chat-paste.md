@@ -32,9 +32,16 @@
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/privacy.md
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/report-design.md
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/templates/report-skeleton.html
-- https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/README.md
 
-讀不到就用這則摘要，並在報告開頭寫「未讀到 GitHub 正本」。
+**不要抓、不要抄**這些（虛構示範，不是這個人的紀錄）：
+- https://ai.lifehacker.tw/reports/ai-level-check-demo/
+- https://github.com/Raymondhou0917/ai-level-check/blob/main/docs/lv1.html
+- https://github.com/Raymondhou0917/ai-level-check/blob/main/docs/lv3.html
+- https://github.com/Raymondhou0917/ai-level-check/blob/main/docs/lv4.html
+出現「林可安／周子寧／何柏廷」或「改作品集頁」這種示範情節，這份報告作廢，用證據重寫。
+
+讀不到判準檔就用這則摘要，並在報告開頭寫「未讀到 GitHub 正本」。
+版型只准用 report-skeleton.html，把 `{{ }}` 換成這個人的判斷。
 
 # 證據從哪來（按順序，用你實際拿得到的，拿到就寫）
 
@@ -64,10 +71,13 @@
 
 未觀察到 ≠ 不會。較高級只有零星證據時不升級。
 
-# 人物志（風格不是分數）
+# 人物志（風格不是分數）——總覽必須有，不能省
 
 四軸，組出代號：交辦 P 給足脈絡／Q 先問再說；查核 V 動手驗證／A 直接採用；沉澱 S 固化資產／O 一次性；動手 E 讓 AI 執行／C 只對話。
-網頁純問答多半落在 C。C 不是比較差。分型旁邊必須寫「這是風格不是分數」。
+網頁純問答多半落在 C。C 不是比較差。資料不夠就寫 `Q?OC`，不要整塊刪掉，也不要去 Demo 借一個型。
+總覽必須有：代號、稱號、一句話、**四軸 2×2 格**、以及「這是風格不是分數」。沒有這塊就不算交卷。
+
+稱號速查：PVSE 系統建築師、PVSC 流程設計者、PVOE 精準特工、PVOC 求證派、PASE 自動化狂人、PASC 交辦型主管、PAOE 效率外包客、PAOC 需求規格官、QVSE 邊做邊修、QVSC 好奇查證家、QVOE 直覺實驗家、QVOC 抬槓辯論家、QASE 一把梭、QASC 靈感速記員、QAOE 許願池、QAOC 閒聊夥伴。
 
 # 四項系統驗證（跟等級分開）
 
@@ -87,7 +97,7 @@
 1. 綜合評級（LVn 或「目前可確認至 LVn」或「無法定級」）
 2. 三欄白話：擅長什麼（最多四句，附案例）、沒做好什麼（最多兩句）、下一步只寫一件
 3. LV0–LV5 階梯，標出本次位置
-4. 人物志代號 + 「風格不是分數」
+4. 人物志：代號 + 稱號 + 四軸 2×2 + 「風格不是分數」（沒有這塊＝沒做完）
 5. 詳細六節：工作實例表（表格，不要列點）、下一步、能力細項、工作系統與組織強度（先對照表、再獨立寫「AI 對事業背景的掌握」，沒讀到也寫尚未觀察）、值得保留與制度化潛力（目前／以後怎麼用必須寫：一次性用法／日常輔助／可複用資產／制度化流程）、三句結論
 
 每個判斷指得出「案例 N」。案例用表格：編號、這件工作、誰在做、用哪個入口、大概日期。
@@ -96,7 +106,8 @@
 
 # 現在就寫
 
-讀完公開檔（或確認讀不到）之後，立刻輸出完整 HTML。先不要問一堆題目；只缺最關鍵的一件證據才問一次，問完仍要先交一版報告。
+讀完公開判準與骨架（或確認讀不到）之後，立刻輸出完整 HTML。先不要問一堆題目；只缺最關鍵的一件證據才問一次，問完仍要先交一版報告。
+使用者說「再做一次／補 16 型」時，用這一串已經有的紀錄補上缺的區塊，不要去抓 Demo 頁。
 ```
 
 ## 複製到這裡

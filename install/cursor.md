@@ -36,12 +36,5 @@ ln -s ~/ai-level-check/SKILL.md .cursor/rules/ai-level-check.mdc
 
 例如只用 ChatGPT 網頁版、Gemini 網頁版。
 
-那就走**貼上模式**：把 `SKILL.md` 貼給它，然後說
-
-```
-我沒有本機紀錄。請直接分析你在這個對話與專案裡讀得到的歷史，
-並在報告開頭寫明分析範圍僅限於此。
-```
-
-這時候它會退回成「純 prompt」的用法——也就是這個專案最初的形態，
-效果取決於那個平台讓它讀到多少東西。
+那就走**貼上模式**：打開 [`prompts/chat-paste.md`](../prompts/chat-paste.md)，複製那份 Prompt。
+不要貼整份 `SKILL.md` 當網頁 Prompt，也不要說「照 Demo 再做一份」——Demo 是假資料，模型會直接抄走。

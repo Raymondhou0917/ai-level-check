@@ -7,7 +7,7 @@
 ### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.4-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.5-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![en](https://img.shields.io/badge/en-English-1b6ca8.svg)](README.en.md)
@@ -108,6 +108,7 @@ python3 ~/ai-level-check/scripts/collect.py --days 14
 
 - 這串已經聊過工作：直接說「用這一串評估我，開始寫報告」
 - 新開的空白對話：把最近對話貼在後面再叫它寫
+- **不要叫它「照 Demo 再做一份」。** Demo 是虛構的林可安／周子寧／何柏廷。版型用 `templates/report-skeleton.html`。自己的報告總覽一定要有 16 型人物志（四字母＋四軸格）；沒有就說「補人物志，不要打開 Demo」
 
 多數網頁版（含 Gemini）看不到別串記憶。不要只說「用你以前對我的記憶」。這條路通常最多到 LV3。不是比較弱，是網頁版看不到硬碟上的系統。
 
@@ -354,7 +355,7 @@ ai-level-check/
 ├── prompts/chat-paste.md           給 ChatGPT／Gemini／Claude 網頁版複製的檢核 Prompt
 ├── templates/report-skeleton.html  報告版型骨架（單檔、可列印 A4）
 ├── docs/                           虛構示範站（LV1／LV3／LV4）＋ [how-it-works.md](docs/how-it-works.md)
-├── evals/report-checklist.md       16 條「報告有沒有守規矩」的檢查
+├── evals/report-checklist.md       報告有沒有守規矩的檢查
 └── install/                        Claude Code · Codex · Cursor · 團隊部署
 ```
 

@@ -82,6 +82,7 @@
   .bento-axes article{padding:1em 1.15em 1.2em}
   .bento-axes article:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .bento-axes article:nth-child(odd){border-right:1px solid var(--line)}
+  .bento-axes h4{margin:.15em 0 .35em;font-size:1rem}
   .gear-row,.check-row{display:grid;gap:8px;margin:1.1em 0;width:100%;max-width:100%;min-width:0}
   .gear-row{grid-template-columns:repeat(5,minmax(0,1fr))}
   .check-row{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -200,11 +201,32 @@
 <p>{{未達 LV5 時：下一級所缺的行為或證據，分成「已確認尚未做到」與「尚無證據可判斷」}}</p>
 <p><b>系統驗證狀態：</b>{{哪些已驗證、哪些尚未確認。完整四項見第 4 節}}</p>
 
-<!-- 5. 人物志分型 -->
+<!-- 5. 人物志分型：缺這整塊＝報告沒做完。資料不夠就寫 P?OC，不要抄 Demo。 -->
 <div class="persona">
-  <div class="code">{{PVSE}}</div>
+  <div class="code">{{PVSE 或 P?OC}}</div>
   <p><b>{{稱號}}</b>　{{一句話}}</p>
-  <p class="note">判定依據：{{四個軸各自來自哪個案例}}</p>
+  <div class="bento-axes">
+    <article>
+      <p class="k">交辦 · {{P 或 Q 或 ?}}</p>
+      <h4>{{先講清楚／先問再說／資料不足}}</h4>
+      <p>{{依據哪個案例。指不出來就寫尚未觀察。}}</p>
+    </article>
+    <article>
+      <p class="k">查核 · {{V 或 A 或 ?}}</p>
+      <h4>{{動手核對／直接採用／資料不足}}</h4>
+      <p>{{依據哪個案例}}</p>
+    </article>
+    <article>
+      <p class="k">沉澱 · {{S 或 O 或 ?}}</p>
+      <h4>{{固化資產／一次性／資料不足}}</h4>
+      <p>{{依據哪個案例}}</p>
+    </article>
+    <article>
+      <p class="k">動手 · {{E 或 C 或 ?}}</p>
+      <h4>{{讓 AI 執行／只對話／資料不足}}</h4>
+      <p>{{依據哪個案例}}</p>
+    </article>
+  </div>
   <p class="disclaimer">分型是使用風格，不是能力高低。<code>QAOC</code> 不比 <code>PVSE</code> 差，
   只是把 AI 用在不同的地方；等級與分型不可換算。</p>
 </div>

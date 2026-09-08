@@ -181,6 +181,7 @@ MATURITY_NOTE = (
 def page(filename, title, description, body):
     canon = f"{CANON_BASE}/{filename}"
     return f"""<!DOCTYPE html>
+<!-- FICTIONAL DEMO. Names 林可安／周子寧／何柏廷 and their cases are fake. Do NOT copy this HTML as a real person's report. Use templates/report-skeleton.html and the user's own evidence. -->
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
@@ -223,7 +224,8 @@ def page(filename, title, description, body):
 
 
 BANNER = """<p class="demo-banner">
-  <b>虛構示範。</b>這三份是假資料，用來對照 LV1、LV3、LV4。目錄可切 Demo。
+  <b>虛構示範。</b>這三份是假資料（林可安／周子寧／何柏廷），用來對照 LV1、LV3、LV4。
+  寫自己的報告時不要抄這頁，版型用 templates/report-skeleton.html。
 </p>"""
 
 

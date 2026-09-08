@@ -7,7 +7,7 @@
 ### How good is your AI usage, really? Let AI read the record.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.4-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.5-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![en](https://img.shields.io/badge/en-English-1b6ca8.svg)](README.en.md)
@@ -111,6 +111,7 @@ Open [prompts/chat-paste.md](prompts/chat-paste.md) and paste the prompt. It inc
 
 - If this thread already has your work: say “evaluate me from this thread and write the report now”
 - If this is a blank chat: paste recent threads, then tell it to write
+- **Do not say “make one like the demo.”** The demos are fictional people. Layout comes from `templates/report-skeleton.html`. A report without the 16-type persona block (four-letter code + 2×2 axes) is incomplete.
 
 Most web AIs (including Gemini) cannot see other chats. Do not only say “use your memory of me.” This path usually tops out at LV3. Not weaker — the browser cannot see the system on disk.
 
