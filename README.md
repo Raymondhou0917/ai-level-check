@@ -104,9 +104,12 @@ python3 ~/ai-level-check/scripts/collect.py --days 14
 
 ### 2. 只用網頁版 ChatGPT 或 Gemini
 
-打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製裡面的 Prompt，貼進網頁對話，再貼上你最近的對話。
+打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製 Prompt 貼進網頁對話。Prompt 裡有公開 repo 網址，讓它自己去讀判準。
 
-這條路只能評你貼進去的問答，通常最多到 LV3。不是比較弱，是網頁版看不到硬碟上的系統。
+- 這串已經聊過工作：直接說「用這一串評估我，開始寫報告」
+- 新開的空白對話：把最近對話貼在後面再叫它寫
+
+多數網頁版（含 Gemini）看不到別串記憶。不要只說「用你以前對我的記憶」。這條路通常最多到 LV3。不是比較弱，是網頁版看不到硬碟上的系統。
 
 ---
 
@@ -357,7 +360,7 @@ ai-level-check/
 
 ### 我沒有 Claude Code 或 Codex，只用 ChatGPT 網頁版
 
-打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製裡面的 Prompt，貼進網頁版，再貼上最近的對話。
+打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製 Prompt。已在這串聊過就直接叫它寫；新開空白對話再貼紀錄。
 
 這條路評的是你貼進去的問答，看不到排程、草稿信箱、本機腳本。
 報告開頭會寫分析範圍；等級通常最多穩到 LV3。要看 LV4／LV5，還是得在自己電腦跑 skill。

@@ -107,9 +107,12 @@ Standard library only. No packages, no network, no upload.
 
 ### 2. You only use ChatGPT or Gemini in the browser
 
-Open [prompts/chat-paste.md](prompts/chat-paste.md), copy the prompt, paste it into the web chat, then paste your recent threads.
+Open [prompts/chat-paste.md](prompts/chat-paste.md) and paste the prompt. It includes the public repo URL so the model can fetch the criteria.
 
-This path can only judge what you pasted. It usually tops out at LV3. Not weaker — the browser cannot see the system on disk.
+- If this thread already has your work: say “evaluate me from this thread and write the report now”
+- If this is a blank chat: paste recent threads, then tell it to write
+
+Most web AIs (including Gemini) cannot see other chats. Do not only say “use your memory of me.” This path usually tops out at LV3. Not weaker — the browser cannot see the system on disk.
 
 ---
 
@@ -341,7 +344,7 @@ ai-level-check/
 
 ### I only use ChatGPT in the browser
 
-Open [prompts/chat-paste.md](prompts/chat-paste.md), copy the prompt, paste it into the web app, then paste recent threads.
+Open [prompts/chat-paste.md](prompts/chat-paste.md). If this thread already has your work, tell it to write; if the chat is blank, paste records first.
 
 This path judges the Q&A you pasted. It cannot see schedules, draft mailboxes, or local scripts.
 The report will state its scope. The level usually tops out at LV3. LV4 / LV5 still need the local skill.
