@@ -2,6 +2,47 @@
 
 本專案的版本紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)。
 
+## [0.4.2] - 2026-09-08
+
+### 新增
+
+- **公開入口頁** `docs/index.html`：給「AI 幾級了」被搜到與被引用用。三份 Demo 各有獨立標題與 canonical。品牌網址規劃為 `https://ai.lifehacker.tw/reports/ai-level-check-demo/`。
+
+## [0.4.1] - 2026-09-08
+
+### 新增
+
+- **公開示範站 `docs/`**：三份虛構報告（LV1／LV3／LV4），目錄可切 Demo 1／2／3。不是真實使用者紀錄。本機 `python3 -m http.server 8767 --directory docs`；公開網址等 GitHub Pages（來源 `/docs`）或後續掛到 `ai.lifehacker.tw/reports/`。
+
+## [0.4.0] - 2026-09-08
+
+### 新增
+
+- **Antigravity（agy）來源**：本機有 `~/.gemini/antigravity/` 就一起掃，沒有就略過，仍以 Claude Code ＋ Codex 為主。桌面與 CLI 算同一個入口。對話在 sqlite ＋ protobuf 裡，step_type 14 是本人發言。
+- **工作量欄位 `effort`**：本人對話則數、打出去的訊息數、平均每則對話幾則訊息。Token 只列 Claude／Codex 的**模型輸出**（輸入含大量重複 context，加總會膨脹；Antigravity 本機庫掃不到用量）。報告上必須附這句備註，不得換成能力分數：
+
+  > 最好的 AI 工作者是用最少的訊息數跟最少的 token 達到一樣的成果；但因為每個人對工作成果好的標準不同，這個數字無法直接拿來評估，僅供參考。
+
+## [0.3.1] - 2026-09-08
+
+### 修正（LV5 定級）
+
+上一輪把兩件事當成 LV5 硬門檻，會讓已在營運的系統永遠停在 LV4＋：
+
+1. **例外處理 ≠ 窗口內跑過隔離演練。** 人在迴路（只建草稿、本人審閱後發送、規則另開對話回寫）算例外處理。四項系統驗證第 2 項未測，不得把等級封在 LV4。
+2. **多棲的必要條件是 A+B**（兩個入口有本人操作＋共用層兩邊讀得到）。一家雲端掛了立刻切（C）窗口內沒發生，寫尚未觀察，不得擋 LV5。
+
+並在 `levels.md`／`SKILL.md`／`automation-gears.md` 寫明：五顆自動化齒輪是 LV4「固化成代理」與 LV5「系統自己在跑」的具體形態，不是獨立一級。
+
+另：報告齒輪與系統檢查格子改為 `minmax(0,1fr)`，避免撐破主欄。給網頁版 Chat 的複製 Prompt 放在 `prompts/chat-paste.md`，README 不再叫人貼整份 `SKILL.md`。
+
+## [0.3.0] - 2026-09-08
+
+### 新增
+
+- LV5 多棲：日常依賴雲端 LLM 時，同一套規則與技能至少兩個獨立入口能接著做。
+- `collect.py` 產出 `habitats.human_by_source`。
+
 ## [0.2.0] - 2026-09-08
 
 ### 新增

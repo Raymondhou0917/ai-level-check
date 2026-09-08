@@ -20,14 +20,17 @@
     --sans:"Noto Sans TC","PingFang TC","Hiragino Sans",system-ui,sans-serif;
   }
   *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
   body{margin:0;background:var(--paper);color:var(--ink);
        font:16px/1.75 var(--sans);-webkit-font-smoothing:antialiased}
-  .wrap{max-width:820px;margin:0 auto;padding:56px 28px 96px}
+  .wrap{max-width:1000px;margin:0 auto;padding:56px 32px 96px}
   h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.35}
   h1{font-size:2rem;margin:0 0 .4em}
-  h2{font-size:1.4rem;margin:3em 0 .6em;padding-top:1.2em;border-top:1px solid var(--line)}
+  h2{font-size:1.4rem;margin:3em 0 .6em;padding-top:1.2em;border-top:1px solid var(--line);
+     scroll-margin-top:24px}
   h3{font-size:1.1rem;margin:2em 0 .5em}
-  p{margin:0 0 1em;max-width:38em}
+  header{scroll-margin-top:24px}
+  p{margin:0 0 1em}
   a{color:var(--accent)}
   small,.note{font-size:.86rem;color:var(--ink-3)}
 
@@ -69,15 +72,53 @@
 
   details{margin:1em 0;padding:.4em 0;border-top:1px solid var(--line-2)}
   summary{cursor:pointer;font-size:.92rem;color:var(--ink-2)}
+  .cases{margin:1.6em 0 2em;padding:.2em 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cases>summary{font-size:1rem;font-weight:600;color:var(--ink);padding:.7em 0}
+  .case-table{margin:.4em 0 1em;font-size:.9rem}
+  .case-table th{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+  .case-table .n{font-family:var(--serif);font-weight:600;color:var(--accent);width:2.4em}
+  .case-table .g{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--line-2)}
+  .bento-axes{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:1em 0 0;border:1px solid var(--line)}
+  .bento-axes article{padding:1em 1.15em 1.2em}
+  .bento-axes article:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .bento-axes article:nth-child(odd){border-right:1px solid var(--line)}
+  .gear-row,.check-row{display:grid;gap:8px;margin:1.1em 0;width:100%;max-width:100%;min-width:0}
+  .gear-row{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .check-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .gear,.check{min-width:0;border:1px solid var(--line);padding:.85em .7em .95em;
+               display:flex;flex-direction:column;box-sizing:border-box}
+  .gear.on,.check.on{border-color:var(--accent);background:rgba(47,93,98,.05)}
+  .diag{width:100%;height:auto;display:block}
+  figure.viz{margin:1.4em 0 1.8em}
+  figure.viz .diag{border:1px solid var(--line)}
   blockquote{margin:1em 0;padding-left:1em;border-left:2px solid var(--line);
              color:var(--ink-2);font-size:.94rem}
 
-  nav.toc{margin:2.6em 0;font-size:.94rem}
-  nav.toc ol{margin:0;padding-left:1.4em;color:var(--ink-2)}
+  /* TOC Rail：對齊 report-page 1.15.0（靠左浮動、內文置中、無色塊） */
+  .toc{position:fixed;left:24px;top:100px;width:156px;z-index:50}
+  .toc .t{font:700 .68rem ui-monospace,monospace;letter-spacing:.1em;color:var(--ink-3);
+          text-transform:uppercase;margin-bottom:11px}
+  .toc a{display:flex;gap:8px;align-items:baseline;text-decoration:none;color:var(--ink-3);
+         font-size:.79rem;line-height:1.4;padding:5px 0;transition:color .15s}
+  .toc a .tn{font:600 .68rem ui-monospace,monospace;flex:none;opacity:.7}
+  .toc a:hover{color:var(--ink-2)}
+  .toc a.on{color:var(--accent);font-weight:600}
+  .toc a.on .tn{opacity:1;color:var(--accent)}
+  .toc-btn{display:none}
 
   footer{margin-top:5em;padding-top:1.4em;border-top:1px solid var(--line);
          font-size:.84rem;color:var(--ink-3)}
 
+  @media (max-width:1400px){
+    .toc{position:fixed;left:auto;right:22px;bottom:78px;top:auto;width:auto;max-width:220px;
+         background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:14px 16px;
+         box-shadow:0 8px 24px rgba(28,28,30,.12)}
+    .toc[hidden]{display:none}
+    .toc-btn{display:inline-flex;align-items:center;position:fixed;right:22px;bottom:22px;z-index:51;
+             font:600 .8rem var(--sans);background:var(--paper);color:var(--ink);
+             border:1px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;
+             box-shadow:0 8px 24px rgba(28,28,30,.12)}
+  }
   @media (max-width:640px){
     .wrap{padding:32px 18px 64px}
     h1{font-size:1.55rem}
@@ -85,8 +126,10 @@
     .verdict .lv{font-size:2rem}
   }
   @media print{
+    html{scroll-behavior:auto}
     body{background:#fff}
     .wrap{max-width:none;padding:0}
+    .toc,.toc-btn{display:none}
     h2{page-break-before:always;break-before:page}
     h2:first-of-type{page-break-before:auto;break-before:auto}
     details{display:block!important}
@@ -98,22 +141,48 @@
 </style>
 </head>
 <body>
+<button class="toc-btn" id="toc-btn" type="button">☰ 章節目錄</button>
+<nav class="toc" id="toc" aria-label="章節目錄">
+  <div class="t">章節</div>
+  <a href="#s0"><span class="tn">00</span>總覽</a>
+  <a href="#s1"><span class="tn">01</span>綱要瀏覽</a>
+  <a href="#s2"><span class="tn">02</span>優先改善</a>
+  <a href="#s3"><span class="tn">03</span>核心能力</a>
+  <a href="#s4"><span class="tn">04</span>工作系統</a>
+  <a href="#s5"><span class="tn">05</span>制度化潛力</a>
+  <a href="#s6"><span class="tn">06</span>最後結論</a>
+</nav>
 <div class="wrap">
 
 <!-- ═══════════ 總覽頁：一頁看懂 ═══════════ -->
-<header>
+<header id="s0">
   <h1>AI 使用能力報告</h1>
   <p class="meta">{{姓名或代號}}　·　資料期間 {{起日}} – {{迄日}}　·　產出於 {{產出日期}}</p>
 </header>
 
 <!-- 1. 參考資料範圍：2–4 句，放在等級之前 -->
+<p class="lede">{{這份報告在回答什麼。給主管／HR 看得懂的兩句。}}</p>
 <p class="scope">{{讀到哪些紀錄、涵蓋期間、缺哪些來源、這次能判斷什麼。期間不確定就明說。}}</p>
 
-<!-- 2. 綜合評級 -->
+<!-- 2. 綜合評級 + 一眼看懂三欄 -->
 <div class="verdict">
   <span class="lv">{{LVn}}</span>
-  <span class="name">{{等級名稱}}</span>
+  <span class="name">{{白話等級名稱}}</span>
   <p class="gap">{{一句最主要的已確認落差，或尚缺的評估證據——兩者要分清楚}}</p>
+</div>
+<div class="glance">
+  <section>
+    <h3>擅長什麼</h3>
+    <ul><li>{{最多四句，附案例編號}}</li></ul>
+  </section>
+  <section>
+    <h3>目前沒做好</h3>
+    <ul><li>{{最多兩句}}</li></ul>
+  </section>
+  <section>
+    <h3>下一步</h3>
+    <p class="do"><b>先做這一件：</b>{{一件事、怎樣算完成}}</p>
+  </section>
 </div>
 
 <!-- 3. 等級量表：讀者不需回查文件就看得懂 -->
@@ -151,16 +220,8 @@
 </ul>
 <p class="note">完整證據與判斷依據見後方詳細分析。</p>
 
-<nav class="toc">
-  <ol>
-    <li><a href="#s1">綱要瀏覽表</a></li>
-    <li><a href="#s2">優先改善事項</a></li>
-    <li><a href="#s3">AI 核心能力表</a></li>
-    <li><a href="#s4">工作系統與組織強度對照</a></li>
-    <li><a href="#s5">值得保留與制度化潛力</a></li>
-    <li><a href="#s6">最後結論</a></li>
-  </ol>
-</nav>
+<!-- 工作量：對話則數、本人訊息數、平均每則幾則。有 token 才列輸出。必須附僅供參考備註，不得當分數。 -->
+<p class="note">{{最好的 AI 工作者是用最少的訊息數跟最少的 token 達到一樣的成果；但因為每個人對工作成果好的標準不同，這個數字無法直接拿來評估，僅供參考。}} 本人對話 {{N}} 則、打出去 {{N}} 則訊息、平均每則 {{N}} 則。Token 輸出 {{N 或掃不到}}。</p>
 
 <!-- ═══════════ 詳細分析 ═══════════ -->
 
@@ -182,6 +243,13 @@
 </tbody>
 </table>
 </div>
+
+<details class="cases">
+  <summary>點這裡看：表格裡的「案例」實際是哪一件工作</summary>
+  <ol>
+    <li>{{一句白話：這是哪一件真實工作}}<span>{{本人操作／系統自動跑}}</span></li>
+  </ol>
+</details>
 
 <h2 id="s2">二、優先改善事項</h2>
 <h3>{{1. 具體不足}}　<span class="tag warn">{{確認不足 · 優先處理}}</span></h3>
@@ -254,12 +322,34 @@
 <p class="note">以下最多三項，只列會影響能力描述或原因歸屬的事項。不需要回覆。</p>
 <ul><li>{{…}}</li></ul>
 
-<footer>
-  由 <a href="https://github.com/Raymondhou0917/ai-level-check">ai-level-check</a> 產出．
-  本報告為觀察紀錄，不作為考績、升遷或人事決定的單一依據．
-  不含排名或百分位．資料來源與限制見本頁開頭。
+<footer class="site-footer">
+  <p>
+    本報告由開源專案 <a href="https://github.com/Raymondhou0917/ai-level-check">ai-level-check</a> 產出（公開後以此網址為準）。
+    方法與課程資源見 <a href="https://ai.lifehacker.tw/">AI Agent 學習站</a>。
+  </p>
+  <p>
+    這是觀察紀錄，不能單獨當作考績、升遷或人事決定的依據，也不提供排名。
+  </p>
 </footer>
 
 </div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function upd(){
+    var y=window.scrollY+120, idx=0;
+    secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) idx=i; });
+    links.forEach(function(a,i){ a.classList.toggle('on', i===idx); });
+  }
+  window.addEventListener('scroll',upd,{passive:true}); upd();
+  var toc=document.getElementById('toc'), tb=document.getElementById('toc-btn');
+  function narrow(){ return window.matchMedia('(max-width:1400px)').matches; }
+  function sync(){ if(narrow()) toc.hidden=true; else toc.hidden=false; }
+  sync(); window.addEventListener('resize',sync);
+  tb.addEventListener('click',function(){ toc.hidden=!toc.hidden; });
+  links.forEach(function(a){ a.addEventListener('click',function(){ if(narrow()) toc.hidden=true; }); });
+})();
+</script>
 </body>
 </html>

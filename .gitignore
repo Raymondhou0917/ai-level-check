@@ -1,3 +1,8 @@
+# 機密
+.env
+.env.*
+!.env.example
+
 # 證據包＝原始對話紀錄的抽取結果，預設不進版控。
 # 進 repo 的是「報告」，不是原始紀錄。理由見 references/privacy.md。
 evidence/

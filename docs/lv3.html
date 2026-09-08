@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<meta name="ai-content-signal" content="search=yes, ai-input=yes, ai-train=yes">
+<meta name="description" content="虛構示範。交代清楚、會指出錯、會驗證、還沒留下模板時，AI 幾級了的報告會長這樣。">
+<title>AI 幾級了示範｜LV3 精準下指令</title>
+<link rel="canonical" href="https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:title" content="AI 幾級了示範｜LV3 精準下指令">
+<meta property="og:description" content="虛構示範。交代清楚、會指出錯、會驗證、還沒留下模板時，AI 幾級了的報告會長這樣。">
+<meta property="og:url" content="https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html">
+<meta property="og:image" content="https://ai.lifehacker.tw/reports/ai-level-check-demo/screenshots/01-overview.jpg">
+<link rel="stylesheet" href="assets/report.css">
+</head>
+<body>
+<button class="toc-btn" id="toc-btn" type="button">☰ 章節目錄</button>
+<nav class="toc" id="toc" aria-label="示範與章節目錄">
+  <div class="t">示範切換</div>
+    <a class="demo" href="index.html"><span class="tn">⌂</span>入口</a>
+  <a class="demo" href="lv1.html"><span class="tn">1</span>Demo 1 · LV1</a>
+  <a class="demo current" href="lv3.html"><span class="tn">2</span>Demo 2 · LV3</a>
+  <a class="demo" href="lv4.html"><span class="tn">3</span>Demo 3 · LV4</a>
+  <div class="t">章節</div>
+  <a href="#s0"><span class="tn">00</span>一看就懂</a>
+  <a href="#s1"><span class="tn">01</span>工作怎麼用</a>
+  <a href="#s2"><span class="tn">02</span>下一步</a>
+  <a href="#s3"><span class="tn">03</span>能力細項</a>
+  <a href="#s4"><span class="tn">04</span>工作系統</a>
+  <a href="#s5"><span class="tn">05</span>值得留下</a>
+  <a href="#s6"><span class="tn">06</span>結論</a>
+</nav>
+<div class="wrap">
+
+<header id="s0">
+  <h1>AI 使用能力報告</h1>
+  <p class="meta">示範・周子寧（虛構）　·　看的是 2026-08-26 到 09-08 這 14 天，電腦裡實際留下的工作紀錄　·　2026-09-08 產出</p>
+</header>
+<p class="demo-banner">
+  <b>虛構示範。</b>這三份是假資料，用來對照 LV1、LV3、LV4。目錄可切 Demo。
+</p>
+<p class="lede">
+這份報告在回答一件事：這個人平常怎麼跟 AI 一起做事、已經能獨立完成什麼、下一次該補哪一件。
+不是考試排名，也不是「會不會寫提示詞」的分數。
+</p>
+<p class="scope">
+讀的是這台電腦上 Claude Code 的對話紀錄。
+這 14 天共 41 則對話；本人親自打字的有 41 則（186 則訊息），其中 28 則有實際改檔或開瀏覽器。
+沒有排程、沒有系統在無人時自己跑。沒讀到的來源：ChatGPT 網頁、會議、口頭交代。
+所以這份報告描述的是「在這一個入口裡實際發生的事」，不是這個人全部的工作。
+</p>
+<div class="verdict">
+  <span class="lv">LV3</span>
+  <span class="name">精準下指令：交代得清楚，答錯時指得出哪裡不對，做完會去看</span>
+  <p class="gap">
+    白話：第一次就講背景與完成標準，色票不對會指出哪三個 token，改完自己打開頁面看。
+    還沒看到他把這套改稿流程寫成下次能直接跑的說明。所以停在第 3 級，不是第 4 級。
+  </p>
+</div>
+<div class="glance">
+  <section>
+    <h3>擅長什麼</h3>
+    <ul>
+      <li>第一次交代就帶完成標準（案例 1、4）</li>
+      <li>答錯時指得出具體哪裡不對，不是只說重寫（案例 2）</li>
+      <li>做完會打開頁面核對，不是看了就信（案例 1、3）</li>
+    </ul>
+  </section>
+  <section>
+    <h3>目前沒做好</h3>
+    <ul>
+      <li>同一套改作品集的流程，下一則對話又從頭講一遍</li>
+      <li>只有一個入口有本人操作；規則沒寫成共用檔</li>
+    </ul>
+  </section>
+  <section>
+    <h3>下一步</h3>
+    <p class="do">
+      把「改作品集頁」這次真的走通的步驟寫進一份 SKILL.md，下一則同類工作只補這次不一樣的地方。
+    </p>
+  </section>
+</div>
+<ol class="ladder">
+  <li><b>LV0</b><span>拿到答案就用，沒先想過對不對</span></li>
+  <li><b>LV1</b><span>覺得不對就再問一次，換個說法繼續</span></li>
+  <li><b>LV2</b><span>某一類工作已經能穩定交給 AI 做完</span></li>
+  <li class="on"><b>LV3</b><span>交代得清楚；答錯時指得出哪裡不對</span></li>
+  <li><b>LV4</b><span>把有效做法做成別人也能用的模板或自動流程</span></li>
+  <li><b>LV5</b><span>整套工作會自己跑；例外有人接或會停；結果寫回做法</span></li>
+</ol>
+<h3>這一級為什麼算過、還要注意什麼</h3>
+<p>
+<strong>為什麼是第 3 級：</strong>案例 1 第一句就寫給誰看、哪些區塊能動、怎樣算能合併；
+案例 2 不說「重寫」，而是列出三個色票 token；案例 3 改完自己開瀏覽器看。
+這是精準下指令加上查核，不是單點碰運氣。
+</p>
+<p>
+<strong>為什麼還不是第 4 級：</strong>沒有可重用說明、沒有模板、沒有排程。
+有效做法還停在他腦子裡與單則對話裡。未觀察到不等於不會，只是這 14 天沒讀到。
+</p>
+<div class="persona">
+  <div class="code">PVOE</div>
+  <p><strong>精準特工</strong>　交辦清楚、會驗證、會讓 AI 動手改檔，做完當這次的事結束。</p>
+  <div class="bento-axes">
+    <article>
+      <p class="k">交辦 · P</p>
+      <h4>先講清楚再做</h4>
+      <p>案例 1、4 第一次就帶背景與完成標準。</p>
+    </article>
+    <article>
+      <p class="k">查核 · V</p>
+      <h4>動手核對</h4>
+      <p>案例 3 開瀏覽器對頁面；這段期間 19 次測試或比對。</p>
+    </article>
+    <article>
+      <p class="k">沉澱 · O</p>
+      <h4>一次性</h4>
+      <p>沒有寫進 SKILL 或模板。下一則同類工作又從頭講。</p>
+    </article>
+    <article>
+      <p class="k">動手 · E</p>
+      <h4>讓 AI 直接動手</h4>
+      <p>改檔、跑測試、開頁面，不是只聊天。</p>
+    </article>
+  </div>
+  <p class="disclaimer">這是使用習慣的分類，不是能力高低，也不能拿來跟別人比。</p>
+</div>
+
+<h2 id="s1">一、這 14 天，AI 實際被用在哪</h2>
+<figure>
+  <ul class="bars">
+    <li><span>本人親自操作</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="v">41</span></li>
+    <li><span>系統自己在跑</span><span class="track"><span class="fill dim" style="width:0%"></span></span><span class="v">0</span></li>
+    <li><span>被派出的小幫手</span><span class="track"><span class="fill dim" style="width:0%"></span></span><span class="v">0</span></li>
+  </ul>
+  <figcaption>圖 1：全部是本人坐在前面做。沒有自動化，不是壞事——這個人的工作還不需要系統自己跑。</figcaption>
+</figure>
+<figure>
+  <ul class="bars">
+    <li><span>本人打出去的訊息</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="v">186</span></li>
+    <li><span>平均一則對話幾則</span><span class="track"><span class="fill dim" style="width:45%"></span></span><span class="v">4.5</span></li>
+  </ul>
+  <p class="note">最好的 AI 工作者是用最少的訊息數跟最少的 token 達到一樣的成果；但因為每個人對工作成果好的標準不同，這個數字無法直接拿來評估，僅供參考。</p>
+  <figcaption>圖 1b：41 則對話、186 則訊息。來回是在對規格，不是在換形容詞。</figcaption>
+</figure>
+<figure>
+  <ul class="bars">
+    <li><span>用 Claude 親自做</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="v">41</span></li>
+  </ul>
+  <figcaption>圖 2：本人打字出現在一個入口。則數多寡不是能力。</figcaption>
+</figure>
+<div class="scroll wide">
+<table>
+<thead><tr>
+  <th>看什麼</th><th>實際看到的做法</th><th>依據</th>
+  <th>是偶爾還是習慣</th><th>沒做好的地方</th><th>這個判斷有多有把握</th>
+</tr></thead>
+<tbody>
+  <tr>
+    <td>平常拿 AI 做什麼</td>
+    <td>直接改作品集頁、客戶 FAQ、活動頁文案</td>
+    <td>案例 1–4</td>
+    <td>習慣</td>
+    <td>無</td>
+    <td><span class="tag high">高</span></td>
+  </tr>
+  <tr>
+    <td>交代與核對</td>
+    <td>第一次就講背景與完成標準；做完開頁面看</td>
+    <td>案例 1、3</td>
+    <td>習慣</td>
+    <td>無</td>
+    <td><span class="tag high">高</span></td>
+  </tr>
+  <tr>
+    <td>發現不對時怎麼改</td>
+    <td>列出三個色票 token，不說「重寫」</td>
+    <td>案例 2</td>
+    <td>多次</td>
+    <td>無</td>
+    <td><span class="tag high">高</span></td>
+  </tr>
+  <tr>
+    <td>有沒有留下可交接的東西</td>
+    <td>沒有寫進可重用位置</td>
+    <td>—</td>
+    <td>—</td>
+    <td>下一則又從頭講</td>
+    <td><span class="tag high">高</span></td>
+  </tr>
+  <tr>
+    <td>換一家 AI 能不能接著做</td>
+    <td>這次只讀到一個入口</td>
+    <td>—</td>
+    <td>—</td>
+    <td>尚未觀察，不擋第 3 級</td>
+    <td><span class="tag warn">中</span></td>
+  </tr>
+</tbody>
+</table>
+</div>
+<details class="cases" id="cases">
+  <summary>點這裡看：表格裡的「案例」實際是哪一件工作</summary>
+  <p class="note">以下是虛構示範。</p>
+  <div class="scroll">
+  <table class="case-table">
+    <thead><tr><th class="n">#</th><th>這件工作</th><th>誰在做</th><th>入口</th><th>日期</th></tr></thead>
+    <tbody>
+      <tr><td colspan="5" class="g">本人親自操作</td></tr>
+      <tr><td class="n">1</td><td>改作品集首頁，第一句就寫哪些區塊能動、怎樣算能合併</td><td class="who">本人</td><td class="src">Claude</td><td class="dt">08-28</td></tr>
+      <tr><td class="n">2</td><td>色票不對，列出三個 token 名稱請它改，不要重寫整頁</td><td class="who">本人</td><td class="src">Claude</td><td class="dt">08-28</td></tr>
+      <tr><td class="n">3</td><td>改完自己開本機頁面對一次間距</td><td class="who">本人</td><td class="src">Claude</td><td class="dt">08-29</td></tr>
+      <tr><td class="n">4</td><td>把客戶 FAQ 長文改短，並寫死不能出現的語氣</td><td class="who">本人</td><td class="src">Claude</td><td class="dt">09-04</td></tr>
+    </tbody>
+  </table>
+  </div>
+</details>
+
+<h2 id="s2">二、下一步：先補哪一件</h2>
+<h3>1. 把已走通的改稿流程寫下來　<span class="tag warn">本週只做這件</span></h3>
+<ul>
+  <li><strong>看到什麼：</strong>作品集改稿已經能穩定做完，但下一則對話又把完成標準講一次。</li>
+  <li><strong>下次怎麼做：</strong>從案例 1–3 抽出步驟，寫成一份 SKILL.md，放在專案裡。</li>
+  <li><strong>怎樣算完成：</strong>下一則同類工作，第一句只補「這次不一樣的地方」，不再貼完整規格。</li>
+</ul>
+<p>不必為此去接第二個 AI 入口，也不必排程。第 4 級先看有沒有留下別人也能用的做法。</p>
+
+<h2 id="s3">三、能力細項</h2>
+<div class="scroll wide">
+<table>
+<thead><tr><th>看哪一項</th><th>目前程度</th><th>依據</th><th>做得好的地方</th><th>要改的地方</th></tr></thead>
+<tbody>
+  <tr><td>把工作講清楚、拆開做</td><td>穩定在用</td><td>案例 1、4</td><td>第一次交代就含範圍與完成標準</td><td>見下一節，寫下來</td></tr>
+  <tr><td>來回修正</td><td>穩定在用</td><td>案例 2</td><td>逐條規格，不是只說不對</td><td>—</td></tr>
+  <tr><td>做完有沒有核對</td><td>穩定在用</td><td>案例 3</td><td>開頁面對間距</td><td>—</td></tr>
+  <tr><td>會不會讓 AI 真的動手</td><td>穩定在用</td><td>案例 1–3</td><td>改檔、測試、瀏覽器</td><td>—</td></tr>
+  <tr><td>有沒有把做法留給下次</td><td>沒看到</td><td>—</td><td>—</td><td>寫進 SKILL</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="s4">四、工作系統長什麼樣子</h2>
+<h3>換一家 AI，能不能接著做</h3>
+<p>這次只讀到 Claude。沒有第二個入口的本人操作，也還沒有一份兩邊都讀得到的規則。這不擋第 3 級。</p>
+<figure class="viz">
+  <svg class="diag" viewBox="0 0 800 260" role="img">
+    <defs>
+      <marker id="a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0 0, 8 3, 0 6" fill="#4a4a4f"/>
+      </marker>
+    </defs>
+    <text x="40" y="28" fill="#77777d" font-size="12" font-family="Noto Sans TC, PingFang TC, sans-serif" letter-spacing="0.12em">這次有讀到的入口</text>
+    <rect x="40" y="44" width="144" height="64" rx="6" fill="#fdfcfa" stroke="#2f5d62" stroke-width="1.2"/>
+    <text x="112" y="72" text-anchor="middle" fill="#1c1c1e" font-size="16" font-weight="600" font-family="Noto Serif TC, Songti TC, serif">Claude</text>
+    <text x="112" y="92" text-anchor="middle" fill="#4a4a4f" font-size="12" font-family="Noto Sans TC, PingFang TC, sans-serif">本人 41 則</text>
+    <path d="M 112,108 V 156 H 400 V 176" fill="none" stroke="#4a4a4f" stroke-width="1.2" marker-end="url(#a)"/>
+    <rect x="616" y="44" width="144" height="64" rx="6" fill="#fdfcfa" stroke="#c8c4bc" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="688" y="72" text-anchor="middle" fill="#4a4a4f" font-size="16" font-weight="600" font-family="Noto Serif TC, Songti TC, serif">其他入口</text>
+    <text x="688" y="92" text-anchor="middle" fill="#4a4a4f" font-size="12" font-family="Noto Sans TC, PingFang TC, sans-serif">這次沒讀到</text>
+    <path d="M 688,108 V 156 H 400 V 176" fill="none" stroke="#4a4a4f" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a)"/>
+    <rect x="248" y="176" width="304" height="56" rx="6" fill="rgba(47,93,98,0.08)" stroke="#2f5d62" stroke-width="1.4"/>
+    <text x="400" y="200" text-anchor="middle" fill="#1c1c1e" font-size="15" font-weight="600" font-family="Noto Serif TC, Songti TC, serif">工作規則</text>
+    <text x="400" y="218" text-anchor="middle" fill="#4a4a4f" font-size="12" font-family="Noto Sans TC, PingFang TC, sans-serif">見各示範頁說明</text>
+  </svg>
+  <figcaption>圖 3：單一口徑、做法還在對話裡。要到第 5 級才需要兩個入口讀同一份規則。</figcaption>
+</figure>
+<div class="gear-row">
+  <div class="gear">
+    <p class="st">這段沒看到</p>
+    <h4>時間到就動</h4>
+    <p>沒有排程。現在也不需要。</p>
+  </div>
+  <div class="gear">
+    <p class="st">這段沒看到</p>
+    <h4>外面一推就動</h4>
+    <p>沒有。</p>
+  </div>
+  <div class="gear">
+    <p class="st">這段沒看到</p>
+    <h4>進出關卡</h4>
+    <p>沒有。</p>
+  </div>
+  <div class="gear">
+    <p class="st">這段沒看到</p>
+    <h4>推上去就上線</h4>
+    <p>這 14 天沒看到實際呼叫。</p>
+  </div>
+  <div class="gear">
+    <p class="st">這段沒看到</p>
+    <h4>倒下拉起來</h4>
+    <p>沒有。</p>
+  </div>
+</div>
+<p class="note">沒看到只代表這 14 天沒動到。覆蓋度不是分數。獨立設計工作常常零顆齒輪也夠。</p>
+<h3>四項系統檢查</h3>
+<div class="check-row">
+  <div class="check">
+    <p class="st">還沒測</p>
+    <h4>只看文件做得完嗎</h4>
+  </div>
+  <div class="check">
+    <p class="st">還沒測</p>
+    <h4>資料不齊會停嗎</h4>
+  </div>
+  <div class="check">
+    <p class="st">沒有系統可測</p>
+    <h4>沒人盯著還在跑</h4>
+  </div>
+  <div class="check">
+    <p class="st">尚未觀察</p>
+    <h4>出事找得到人</h4>
+  </div>
+</div>
+<p class="note">四項沒測不自動降級。現在也還沒有一套「系統」需要測。</p>
+
+<h2 id="s5">五、值得留下的做法</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>做法</th><th>現在怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
+<tbody>
+  <tr>
+    <td>色票不對就列 token 名稱，不說重寫整頁（案例 2）</td>
+    <td>已經在用</td><td>寫進改稿 SKILL 的「修正時」一節</td><td>本週把這句搬進檔案</td>
+  </tr>
+  <tr>
+    <td>改完自己開頁面對一次（案例 3）</td>
+    <td>已經在用</td><td>當成完成標準最後一行</td><td>維持</td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="s6">六、給本人與主管的結論</h2>
+<ol>
+  <li><strong>現在的位置：</strong>能把一件真實工作交代清楚、改錯、核對完。這一級過了。</li>
+  <li><strong>下週只做一件事：</strong>把作品集改稿步驟寫成一份 SKILL.md。不要同時去接第二個入口。</li>
+  <li><strong>請留下的習慣：</strong>指出具體哪裡不對。這比任何工具名單都更接近下一級。</li>
+</ol>
+
+<footer class="site-footer">
+  <p>
+    這是開源專案
+    <a href="https://github.com/Raymondhou0917/ai-level-check">ai-level-check</a>
+    的<strong>虛構示範</strong>，不是真實紀錄。
+  </p>
+  <p>
+    方法見
+    <a href="https://ai.lifehacker.tw/">AI Agent 學習站</a>。
+    這是觀察紀錄的版型示範，不能當作考績、升遷或人事決定的依據，也不提供排名。
+  </p>
+</footer>
+</div>
+<script src="assets/demo.js"></script>
+</body>
+</html>

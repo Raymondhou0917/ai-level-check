@@ -5,8 +5,8 @@
 ### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.2.0-brightgreen.svg)](CHANGELOG.md)
-[![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex-blue.svg)](references/log-sources.md)
+[![Version](https://img.shields.io/badge/version-0.4.2-brightgreen.svg)](CHANGELOG.md)
+[![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![No Ranking](https://img.shields.io/badge/no-ranking%20%C2%B7%20no%20percentile-lightgrey.svg)](references/privacy.md)
 
@@ -23,7 +23,7 @@
 🧑‍💼 &nbsp;主管想知道團隊 AI 幾級了，只能問「你最近有在用嗎」，得到「有啊很好用」？<br>
 📄 &nbsp;做了一份 AI 能力問卷，大家照著自己想像中的樣子填，填完誰也不知道那是真的還假的？<br>
 🎓 &nbsp;上完 AI 課程，學員想知道自己到底進步了沒，只能憑感覺？<br>
-💼 &nbsp;面試時，別聽信「我最近都有在用 AI」，他的紀錄自己會說話。
+💼 &nbsp;面試時，給他裝這個 skill 跑一份報告、螢幕分享給你看。不用等他胡謅「我最近都有在用 AI」。
 
 </td></tr>
 </table>
@@ -32,7 +32,7 @@
 
 <br>
 
-一個讀本機真實對話紀錄的 skill：掃 Claude Code、Codex 留在硬碟上的紀錄，
+掃 Claude Code、Codex、Antigravity 留在硬碟上的紀錄，
 看這個人怎麼下指令、呼叫了哪些工具、怎麼修正、做出什麼成果，
 產出一份 **有案例、可追溯** 的 AI 使用能力報告。
 
@@ -47,6 +47,64 @@
 不是讓 AI 給人打分數，是讓 AI 把證據攤開來，讓人自己看見。
 
 </div>
+
+---
+
+## 先看長什麼樣子
+
+下面四張是真的跑出來的報告（2026-08-26 到 09-08，14 天）。想自己捲、切等級，打開公開示範：
+[AI 幾級了 Demo](https://ai.lifehacker.tw/reports/ai-level-check-demo/)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/01-overview.jpg" alt="總覽：LV5、擅長什麼、沒做好、下一步"></td>
+<td width="50%"><img src="docs/screenshots/02-usage.jpg" alt="這 14 天 AI 實際被用在哪：長條圖與做法表"></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/03-evaluation.jpg" alt="為什麼是這一級，以及 PVSE 分型"></td>
+<td><img src="docs/screenshots/04-system.jpg" alt="同一套規則、四個入口的棲地圖"></td>
+</tr>
+</table>
+
+截圖是雷蒙自己這兩週的紀錄。點進去的 Demo 則是編的：三個假人、三個等級，目錄可切 Demo 1／2／3。
+
+| 示範 | 等級 | 這個人在做什麼 |
+| :-- | :-- | :-- |
+| [Demo 1 · LV1](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv1.html) | 換句話重問 | 只用網頁版聊天，覺得不對就再問一次 |
+| [Demo 2 · LV3](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv3.html) | 精準下指令 | 交代清楚、會指出錯、會驗證，還沒留下模板 |
+| [Demo 3 · LV4](https://ai.lifehacker.tw/reports/ai-level-check-demo/lv4.html) | 模組化使用 | 做法寫成 skill，有一點排程，系統還沒自己跑 |
+
+本機：
+
+```bash
+python3 -m http.server 8767 --directory docs
+```
+
+然後打開 http://127.0.0.1:8767/ （預設 Demo 2）。
+
+---
+
+## 面試現場：讓紀錄自己說話
+
+以前面試，都是直接問「你 AI 應用能力怎麼樣」。
+對方講得再完整，你也分不出那是真的用過，還是面試前兩天惡補的。
+
+現在可以改成三步：
+
+1. 請面試者在**他自己的電腦**安裝這個 skill
+2. 讓他跑一份最近兩週的報告
+3. 他螢幕分享給你看，或當下用他的電腦打開報告
+
+你看到的是他怎麼下指令、有沒有驗證、做完有沒有留下東西——不是他臨場編的故事。
+這樣會快很多，也不用等他胡謅。
+
+用這個場景時請守三件事：
+
+- **本人自己跑。** 面試官不代跑，也不要求他把 `~/.claude/` 打包寄來。
+- **用螢幕分享就好，不要把 HTML 寄出來、不要截圖存檔。** 報告裡可能有現職的客戶名、還沒公開的產品。
+- **這份報告不能單獨當作錄用或淘汰依據。** 只用 ChatGPT 網頁版的人，本機常常掃不到紀錄，那不是能力差，是來源不同。
+
+隱私與同意的完整界線見 [references/privacy.md](references/privacy.md)。
 
 ---
 
@@ -81,6 +139,7 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
   ┌────────────────────────────────────────┐
   │  ~/.claude/projects/*.jsonl            │
   │  ~/.codex/sessions/**/*.jsonl          │
+  │  ~/.gemini/antigravity/**/*.db（有才掃）│
   └───────────────┬────────────────────────┘
                   │  collect.py（純本機，不連網、不上傳）
                   ▼
@@ -155,7 +214,7 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 | **LV2** | 單點式應用 | 能穩定完成單一類任務，判斷得出答案能不能用 |
 | **LV3** | 精準下指令 | 給得出背景、範圍與完成標準；答錯時指得出具體問題 |
 | **LV4** | 模組化使用 | 把有效做法固定成模板、Skill 或代理，啟用前會實際測試 |
-| **LV5** | 系統級營運 | 分工、驗收、例外處理、維護整合成實際運作的系統，並回寫流程 |
+| **LV5** | 系統級營運 | 分工、例外處理、維護與回寫整合成系統；依賴雲端 LLM 時還要兩個入口讀同一套規則 |
 
 三條硬規則：
 
@@ -263,11 +322,19 @@ AI 沒有這三個問題。它讀得到每一則對話、記得住整個期間�
 
 ## 安裝
 
+兩種跑法，資料能看到多少，等級上限就不一樣：
+
+| | 給誰 | 怎麼跑 | 通常能看到 |
+| :-- | :-- | :-- | :-- |
+| **本機 skill** | Claude Code、Codex、Cursor、Antigravity | 裝好後說「幫我跑這兩週的 AI 使用檢核」 | LV0–LV5，含自動化與多棲 |
+| **貼上模式** | 只用 ChatGPT／Gemini／Claude 網頁版 | 打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製 Prompt，再貼自己的對話 | 多半停在 LV2–LV3。不是比較弱，是網頁版看不到硬碟上的系統 |
+
 | 平台 | 文件 |
 | :-- | :-- |
 | Claude Code | [install/claude-code.md](install/claude-code.md) |
 | Codex | [install/codex.md](install/codex.md) |
 | Cursor / 其他 agent | [install/cursor.md](install/cursor.md) |
+| 只用網頁版 Chat | [prompts/chat-paste.md](prompts/chat-paste.md) |
 | 團隊部署 | [install/team-deploy.md](install/team-deploy.md) |
 
 最短路徑：
@@ -307,7 +374,9 @@ ai-level-check/
 │   ├── log-sources.md              各家紀錄格式的實測文件
 │   ├── report-design.md            兩層報告結構與 HTML 規範
 │   └── privacy.md                  三條紅線與導入邊界
+├── prompts/chat-paste.md           給 ChatGPT／Gemini／Claude 網頁版複製的檢核 Prompt
 ├── templates/report-skeleton.html  報告版型骨架（單檔、可列印 A4）
+├── docs/                           虛構示範站（LV1／LV3／LV4），給 GitHub Pages 用
 ├── evals/report-checklist.md       16 條「報告有沒有守規矩」的檢查
 └── install/                        Claude Code · Codex · Cursor · 團隊部署
 ```
@@ -318,9 +387,12 @@ ai-level-check/
 
 ### 我沒有 Claude Code 或 Codex，只用 ChatGPT 網頁版
 
-那就走**貼上模式**：把 `SKILL.md` 貼給它，讓它分析讀得到的歷史對話，
-並在報告開頭寫明分析範圍。這時候效果取決於那個平台讓它讀到多少東西——
-也就是這個專案最初的形態。
+打開 [prompts/chat-paste.md](prompts/chat-paste.md)，複製裡面的 Prompt，貼進網頁版，再貼上最近的對話。
+
+這條路評的是你貼進去的問答，看不到排程、草稿信箱、本機腳本。
+報告開頭會寫分析範圍；等級通常最多穩到 LV3。要看 LV4／LV5，還是得在自己電腦跑 skill。
+
+不要把整份 `SKILL.md` 貼給網頁版——那是給會掃硬碟的 agent 用的。
 
 ### 掃出來說我是 LV2，可是我覺得我明明有做更多
 
@@ -340,6 +412,15 @@ ai-level-check/
 但規則擋不住一個決心要這樣用的公司。所以真正的防線在導入方式：
 **自願制、本人自己跑、本人決定推不推。** 一個不接受這三條的導入方式，
 你可以合理懷疑它的目的不是幫你成長。
+
+### 面試可以請候選人跑這個嗎？
+
+可以，而且這正是它比口頭自述有用的地方。請他在自己的電腦裝、自己跑、
+螢幕分享報告給你看。不要寄檔、不要截圖、不能當錄用單一依據。
+
+只用網頁版或公司筆電不給裝的人，本機常常掃不到紀錄——
+那要改走 [貼上模式](prompts/chat-paste.md)，不能直接判他比較弱。完整界線見
+[references/privacy.md](references/privacy.md) 的「給用它來面試的人」。
 
 ### 為什麼不給一個總分？
 
@@ -383,7 +464,7 @@ python3 scripts/collect.py --days 14 --no-content
 工程師的 AI 用法跟行銷、設計、客服、會計完全不一樣，一個人寫不出適用所有職能的判準。
 最需要的兩種貢獻：
 
-- **新來源的 collector**：Cursor、Gemini CLI、Antigravity、公司內部工具都還沒有。
+- **新來源的 collector**：Cursor、公司內部工具都還沒有。Antigravity 已接。
   送 PR 請附欄位分布的實測數字，猜出來的欄位會讓所有下游判斷一起錯。
 - **領域判準**：在你的職能裡，「用得好」在紀錄裡長什麼樣？
 
@@ -420,11 +501,7 @@ python3 scripts/collect.py --days 14 --no-content
 問卷不準，口頭報告更不準，因為人本來就評不準這件事。
 聊到最後結論是——**應該讓 AI 去讀 AI 的使用紀錄**。
 
-他先做了簡單的實作，寫成一份可以直接貼給 AI 的檢核 Prompt：
-[有序 AI 工作力檢核 Prompt（通用版）](https://inorders.notion.site/ai-prompt)。
-那份 Prompt 最扎實的地方是它的判斷紀律——證據歸屬要分六類、
-未觀察到不等於不會、禁止排名與百分位、不以提示詞長度評估能力。
-這幾條在本專案裡原樣保留，因為沒有改的必要。
+他先做了簡單的實作，寫成一份可以直接貼給 AI 的檢核 Prompt。
 
 我做的是把它從「一次性的貼上」延伸成一套可以長期運作的東西：
 接上本機真實紀錄、把人打的字跟機器打的字分開、加上可公開的人物志分型、

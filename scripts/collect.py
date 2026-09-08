@@ -10,6 +10,9 @@ ai-level-check / collect.py
     python3 scripts/collect.py --since 2026-08-01 --until 2026-08-31 --out evidence/2026-08
     python3 scripts/collect.py --days 30 --no-content     # 只出計數，不出任何原文
     python3 scripts/collect.py --days 14 --source codex
+    python3 scripts/collect.py --days 14 --source antigravity
+
+有裝 Claude Code、Codex、Antigravity 就掃；沒裝的來源自動略過。
 
 產出：
     summary.json   可核對的發生次數（機器讀）
@@ -38,6 +41,7 @@ import glob
 import json
 import os
 import re
+import sqlite3
 import sys
 from collections import Counter
 
@@ -146,6 +150,21 @@ DELEGATE_TOOLS = {
 }
 
 HUMAN, AUTOMATION, SUBAGENT = "human", "automation", "subagent"
+
+# Antigravity 對話庫裡，step_type=15 出現的工具名（2026-09 本機實測）。
+# 排除 media_* / call_* 這種一次一號的雜訊。
+AGY_TOOLS = {
+    "run_command", "view_file", "replace_file_content", "grep_search",
+    "find_by_name", "write_to_file", "call_mcp_tool", "list_dir",
+    "manage_task", "search_web", "task_notification", "read_resource",
+    "browser_subagent", "generate_image",
+}
+
+EFFORT_NOTE = (
+    "最好的 AI 工作者是用最少的訊息數跟最少的 token 達到一樣的成果；"
+    "但因為每個人對工作成果好的標準不同，這個數字無法直接拿來評估，僅供參考。"
+    "訊息少有時代表 skill、harness 寫得夠完整，有時只是這段期間用得少。"
+)
 
 # ---------------------------------------------------------------- 自動化齒輪
 #
@@ -282,6 +301,12 @@ class Session(object):
         self.files_written = set()
         self.durable_writes = set()
         self.human_marked = 0        # 平台明確標成「人打的」的訊息數
+        self.title = ""              # Antigravity 註解標題，沒有就空
+        self.tokens_in = 0
+        self.tokens_out = 0
+        self.tokens_cache_read = 0
+        self.tokens_available = False
+        self._usage_ids = set()
 
     def touch(self, ts):
         if not ts:
@@ -315,6 +340,117 @@ def parse_ts(raw):
         return dt.datetime.fromisoformat(str(raw).replace("Z", "+00:00")).astimezone()
     except Exception:
         return None
+
+
+def add_usage(sess, usage):
+    """把一筆 usage 加進 session。
+
+    Claude 每一輪都會把整段 cache_read 再寫一次，加總會變成幾億。
+    輸入只算新寫入（input + cache_creation），cache 命中另外記，不當成「用了多少 token」。
+    """
+    if not isinstance(usage, dict):
+        return
+    inn = (usage.get("input_tokens") or 0)
+    inn += usage.get("cache_creation_input_tokens") or 0
+    inn += usage.get("cache_write_input_tokens") or 0
+    cache_hit = usage.get("cache_read_input_tokens") or 0
+    cache_hit += usage.get("cached_input_tokens") or 0
+    out = usage.get("output_tokens") or 0
+    out += usage.get("reasoning_output_tokens") or 0
+    if inn or out or cache_hit:
+        sess.tokens_in += inn
+        sess.tokens_out += out
+        sess.tokens_cache_read += cache_hit
+        sess.tokens_available = True
+
+
+def proto_walk(blob, depth=0, max_depth=12):
+    """從 protobuf 遞迴抽出 UTF-8 字串。Antigravity 對話本體是 nested protobuf。"""
+    i = 0
+    n = len(blob or b"")
+    blob = blob or b""
+    while i < n:
+        key = 0
+        shift = 0
+        ok = True
+        while i < n:
+            b = blob[i]
+            i += 1
+            key |= (b & 0x7f) << shift
+            if not (b & 0x80):
+                break
+            shift += 7
+            if shift > 35:
+                ok = False
+                break
+        if not ok:
+            break
+        wt = key & 7
+        fn = key >> 3
+        if wt == 2:
+            ln = 0
+            shift = 0
+            while i < n:
+                b = blob[i]
+                i += 1
+                ln |= (b & 0x7f) << shift
+                if not (b & 0x80):
+                    break
+                shift += 7
+                if shift > 35:
+                    ln = -1
+                    break
+            if ln < 0 or i + ln > n:
+                break
+            chunk = blob[i:i + ln]
+            i += ln
+            try:
+                s = chunk.decode("utf-8")
+                if s and "\x00" not in s:
+                    printable = sum(c.isprintable() or c in "\n\t\r" for c in s) / max(len(s), 1)
+                    if printable > 0.85:
+                        yield depth, fn, s
+                        continue
+            except Exception:
+                pass
+            if depth < max_depth:
+                for item in proto_walk(chunk, depth + 1, max_depth):
+                    yield item
+        elif wt == 0:
+            while i < n:
+                b = blob[i]
+                i += 1
+                if not (b & 0x80):
+                    break
+        elif wt == 1:
+            i += 8
+        elif wt == 5:
+            i += 4
+        else:
+            break
+
+
+def proto_unix_ts(blob):
+    """從 protobuf varint 裡找出像 Unix 時間的值。"""
+    i = 0
+    blob = blob or b""
+    n = len(blob)
+    found = []
+    while i < n:
+        v = 0
+        shift = 0
+        while i < n:
+            b = blob[i]
+            i += 1
+            v |= (b & 0x7f) << shift
+            if not (b & 0x80):
+                break
+            shift += 7
+            if shift > 63:
+                break
+        if 1_700_000_000 <= v <= 2_000_000_000:
+            found.append(v)
+    return found
 
 
 def iter_jsonl(path):
@@ -372,8 +508,13 @@ def load_claude_code(root, since, until):
             msg = d.get("message")
             if not isinstance(msg, dict):
                 continue
-            if typ == "assistant" and msg.get("model"):
-                sess.models[msg["model"]] += 1
+            if typ == "assistant":
+                if msg.get("model"):
+                    sess.models[msg["model"]] += 1
+                mid = msg.get("id")
+                if mid and mid not in sess._usage_ids:
+                    sess._usage_ids.add(mid)
+                    add_usage(sess, msg.get("usage") or {})
             origin = d.get("origin") or {}
             marked = isinstance(origin, dict) and origin.get("kind") == "human"
             content = msg.get("content")
@@ -470,6 +611,23 @@ def load_codex(root, since, until):
                 if p.get("model"):
                     sess.models[p["model"]] += 1
                 continue
+            if typ == "event_msg":
+                pt = (p.get("type") or "")
+                if pt == "token_count":
+                    info = p.get("info") or {}
+                    total = info.get("total_token_usage") or {}
+                    if total:
+                        sess.tokens_in = (total.get("input_tokens") or 0) + (
+                            total.get("cache_write_input_tokens") or 0)
+                        sess.tokens_out = (
+                            (total.get("output_tokens") or 0)
+                            + (total.get("reasoning_output_tokens") or 0)
+                        )
+                        sess.tokens_cache_read = total.get("cached_input_tokens") or 0
+                        sess.tokens_available = True
+                continue
+            if typ == "token_usage_record":
+                continue
             if typ != "response_item":
                 continue
             hit = True
@@ -519,6 +677,177 @@ def load_codex(root, since, until):
     return sessions
 
 
+# ---------------------------------------------------------------- Antigravity
+#
+# 對話在 ~/.gemini/antigravity/conversations/<uuid>.db（桌面）
+# 與 ~/.gemini/antigravity-cli/conversations/<uuid>.db（CLI）。
+# 本體是 sqlite + nested protobuf。沒裝就整段跳過。
+# 2026-09 實測：trajectory_meta.source 1＝桌面、17＝CLI；
+# step_type 14＝本人發言，15＝模型／工具步驟。
+
+AGY_USER_STEP = 14
+AGY_TOOL_STEPS = {15, 8, 21, 5, 7, 9, 23, 101}
+AGY_TITLE_RE = re.compile(r'title:"((?:\\.|[^"\\])*)"')
+
+
+def agy_title(ann_path):
+    if not os.path.isfile(ann_path):
+        return ""
+    try:
+        text = open(ann_path, errors="ignore").read(4000)
+    except OSError:
+        return ""
+    m = AGY_TITLE_RE.search(text)
+    if not m:
+        return ""
+    return m.group(1).replace('\\"', '"').strip()
+
+
+def agy_user_text(payload):
+    """type 14 裡 depth=1 field=2 是整段本人發言（本機實測）。"""
+    best = ""
+    for depth, fn, s in proto_walk(payload):
+        s = (s or "").strip()
+        if depth == 1 and fn == 2 and len(s) > len(best):
+            best = s
+    return best
+
+
+def agy_tools_in(payload):
+    names = set()
+    for depth, fn, s in proto_walk(payload):
+        t = (s or "").strip()
+        if t in AGY_TOOLS:
+            names.add(t)
+        elif t.startswith("/") and "." in os.path.basename(t) and len(t) < 300:
+            names.add("__path__:" + t)
+    return names
+
+
+def classify_agy(parent_rows):
+    if parent_rows:
+        return SUBAGENT
+    return HUMAN
+
+
+def load_one_agy_db(path, driver, since, until, title=""):
+    try:
+        con = sqlite3.connect("file:%s?mode=ro" % path, uri=True, timeout=1)
+    except sqlite3.Error:
+        return None
+    try:
+        sid = os.path.splitext(os.path.basename(path))[0]
+        sess = Session(sid, "antigravity", path)
+        sess.driver = driver
+        sess.title = title
+        parent_n = 0
+        try:
+            parent_n = con.execute("SELECT COUNT(*) FROM parent_references").fetchone()[0]
+        except sqlite3.Error:
+            pass
+        sess.kind = classify_agy(parent_n)
+        hit = False
+        try:
+            rows = con.execute(
+                "SELECT idx, step_type, metadata, step_payload FROM steps ORDER BY idx"
+            ).fetchall()
+        except sqlite3.Error:
+            con.close()
+            return None
+        for idx, stype, meta, payload in rows:
+            unix = proto_unix_ts(meta)
+            ts = None
+            if unix:
+                try:
+                    ts = dt.datetime.fromtimestamp(unix[0]).astimezone()
+                except (OSError, OverflowError, ValueError):
+                    ts = None
+            if ts and not (since <= ts <= until):
+                continue
+            if ts:
+                hit = True
+                sess.touch(ts)
+            if stype == AGY_USER_STEP:
+                raw = agy_user_text(payload)
+                cleaned = clean_user_text(raw) if raw else ""
+                sess.user_msgs.append((ts, cleaned))
+                sess.human_marked += 1
+            elif stype in AGY_TOOL_STEPS:
+                for name in agy_tools_in(payload):
+                    if name.startswith("__path__:"):
+                        sess.note_write(name.split(":", 1)[1])
+                    else:
+                        sess.tools[name] += 1
+                        sess.tool_seq.append(name)
+        try:
+            for blob, in con.execute("SELECT data FROM gen_metadata"):
+                for depth, fn, s in proto_walk(blob):
+                    if fn == 19 and s.startswith("gemini"):
+                        sess.models[s] += 1
+                    elif s.startswith("file:///"):
+                        path_s = s.replace("file://", "")
+                        if not path_s.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4")):
+                            sess.cwd = sess.cwd or path_s
+        except sqlite3.Error:
+            pass
+        try:
+            for blob, in con.execute("SELECT data FROM trajectory_metadata_blob"):
+                for depth, fn, s in proto_walk(blob):
+                    if s.startswith("file:///"):
+                        path_s = s.replace("file://", "")
+                        if not path_s.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4")):
+                            sess.cwd = sess.cwd or path_s
+                        break
+        except sqlite3.Error:
+            pass
+        con.close()
+        if not hit:
+            # 步驟沒有可用時間戳時，退回檔案 mtime。
+            mtime = dt.datetime.fromtimestamp(os.path.getmtime(path)).astimezone()
+            if not (since <= mtime <= until):
+                return None
+            sess.touch(mtime)
+        if sess.user_msgs or sess.tools:
+            return sess
+        return None
+    except sqlite3.Error:
+        try:
+            con.close()
+        except Exception:
+            pass
+        return None
+
+
+def load_antigravity(since, until):
+    """有裝 Antigravity 才掃；目錄不存在就回空清單。"""
+    sessions = []
+    roots = [
+        (os.path.join(HOME, ".gemini", "antigravity", "conversations"),
+         os.path.join(HOME, ".gemini", "antigravity", "annotations"),
+         "antigravity"),
+        (os.path.join(HOME, ".gemini", "antigravity-cli", "conversations"),
+         os.path.join(HOME, ".gemini", "antigravity-cli", "annotations"),
+         "antigravity-cli"),
+    ]
+    for conv_dir, ann_dir, driver in roots:
+        if not os.path.isdir(conv_dir):
+            continue
+        for path in glob.glob(os.path.join(conv_dir, "*.db")):
+            # 檔案在期間開始前就沒再動過，跳過。結束日之後還在改的，仍要打開看步驟時間。
+            try:
+                mtime = os.path.getmtime(path)
+            except OSError:
+                continue
+            if mtime < since.timestamp():
+                continue
+            sid = os.path.splitext(os.path.basename(path))[0]
+            title = agy_title(os.path.join(ann_dir, sid + ".pbtxt"))
+            got = load_one_agy_db(path, driver, since, until, title)
+            if got:
+                sessions.append(got)
+    return sessions
+
+
 # ---------------------------------------------------------------- 統計
 
 
@@ -548,10 +877,18 @@ def build_summary(sessions, since, until, sources):
     auto = [s for s in sessions if s.kind == AUTOMATION]
     sub = [s for s in sessions if s.kind == SUBAGENT]
 
-    h_msgs = [t for s in human for _, t in s.user_msgs]
+    h_msgs = [t for s in human for _, t in s.user_msgs if t]
+    h_msg_n = sum(len(s.user_msgs) for s in human)
     # 修正只能發生在第一次交辦之後。第一則就算含「錯了」，那是在說明問題，
     # 不是在修正 AI 這一輪的產出。案例抽樣用同一條規則，兩邊數字才對得起來。
-    h_followups = [t for s in human for _, t in s.user_msgs[1:]]
+    h_followups = [t for s in human for _, t in s.user_msgs[1:] if t]
+
+    tok_human = [s for s in human if s.tokens_available]
+    tok_in = sum(s.tokens_in for s in tok_human)
+    tok_out = sum(s.tokens_out for s in tok_human)
+    tok_cache = sum(s.tokens_cache_read for s in tok_human)
+    tok_sources = sorted({s.source for s in tok_human})
+    missing_tok = sorted({s.source for s in human} - set(tok_sources))
     h_tools, h_bash, h_files, h_durable, h_days = agg(human)
     a_tools, a_bash, a_files, a_durable, a_days = agg(auto)
 
@@ -581,11 +918,20 @@ def build_summary(sessions, since, until, sources):
             "subagent": len(sub),
             "drivers": dict(Counter(s.driver for s in sessions).most_common(10)),
         },
+        "habitats": {
+            "_note": (
+                "本人操作落在幾個獨立入口。兩個來源都有對話，是 LV5 多棲的線索，"
+                "不是分數；共用層有沒有接上、一家掛掉時切不切得過去，要看案例與規則入口。"
+            ),
+            "human_by_source": dict(Counter(s.source for s in human)),
+            "human_source_count": len({s.source for s in human}),
+            "automation_by_source": dict(Counter(s.source for s in auto)),
+        },
         "human_usage": {
             "sessions": len(human),
             "sessions_with_tools": sum(1 for s in human if s.tools),
             "active_days": len(h_days),
-            "user_messages": len(h_msgs),
+            "user_messages": h_msg_n,
             "platform_marked_human": sum(s.human_marked for s in human),
             "projects": sorted({redact(s.cwd) for s in human if s.cwd})[:40],
             "models": dict(Counter(m for s in human for m in s.models.elements()).most_common(10)),
@@ -631,6 +977,21 @@ def build_summary(sessions, since, until, sources):
             "user_msg_len_p50": pct(0.5),
             "user_msg_len_p90": pct(0.9),
         },
+        "effort": {
+            "_note": EFFORT_NOTE,
+            "human_sessions": len(human),
+            "human_user_messages": h_msg_n,
+            "messages_per_session": round(h_msg_n / len(human), 1) if human else 0,
+            "tokens_input": tok_in,
+            "tokens_output": tok_out,
+            "tokens_total": tok_out,
+            "tokens_cache_read": tok_cache,
+            "tokens_from_sources": tok_sources,
+            "tokens_unavailable_sources": missing_tok,
+            "human_messages_by_source": dict(Counter(
+                src for s in human for src in [s.source] for _ in s.user_msgs
+            )),
+        },
     }
 
 
@@ -653,7 +1014,7 @@ def score_case(s):
 
 def render_one_case(idx, s, with_content):
     out = []
-    label = os.path.basename(redact(s.cwd or "")) or "未標示專案"
+    label = (s.title or "").strip() or os.path.basename(redact(s.cwd or "")) or "未標示專案"
     out.append("## 案例 %d：%s" % (idx, label))
     out.append("")
     out.append("- 類型：`%s`（驅動來源 `%s`）　來源：`%s`　對話 ID：`%s`"
@@ -744,16 +1105,52 @@ def render_metrics(s):
           "| 自動化執行 automation | %d |" % sp["automation"],
           "| 子代理 subagent | %d |" % sp["subagent"], ""]
     L += ["驅動來源：" + "、".join("`%s`×%d" % (k, v) for k, v in sp["drivers"].items()), ""]
+    hab = s.get("habitats") or {}
+    if hab:
+        L += ["## 多棲（獨立入口）", "", "> %s" % hab.get("_note", ""), ""]
+        L += ["本人操作出現在 **%d** 個來源。" % hab.get("human_source_count", 0), ""]
+        L += ["| 來源 | 本人操作 | 自動化 |", "| :-- | --: | --: |"]
+        keys = sorted(set(hab.get("human_by_source", {})) | set(hab.get("automation_by_source", {})))
+        for k in keys:
+            L.append("| `%s` | %d | %d |" % (
+                k,
+                hab.get("human_by_source", {}).get(k, 0),
+                hab.get("automation_by_source", {}).get(k, 0)))
+        L.append("")
 
     h = s["human_usage"]
     L += ["## 本人操作的範圍", "", "| 項目 | 數字 |", "| :-- | --: |"]
-    L += ["| 對話數 | %d |" % h["sessions"],
+    L += ["| 對話數（session） | %d |" % h["sessions"],
+          "| 本人打出去的訊息 | %d |" % h["user_messages"],
           "| 其中有實際動手（有工具呼叫） | %d |" % h["sessions_with_tools"],
           "| 有紀錄的天數 | %d |" % h["active_days"],
-          "| 使用者發言 | %d |" % h["user_messages"],
           "| 平台明確標成「人打的」 | %d |" % h["platform_marked_human"],
           "| 涵蓋專案 | %d |" % len(h["projects"]), ""]
     L += ["模型：" + ("、".join("%s×%d" % (k, v) for k, v in h["models"].items()) or "紀錄未標示"), ""]
+
+    ef = s.get("effort") or {}
+    if ef:
+        L += ["## 工作量（僅供參考，不是分數）", "", "> %s" % ef.get("_note", EFFORT_NOTE), ""]
+        L += ["| 項目 | 數字 | 讀法 |", "| :-- | --: | :-- |"]
+        rows = [
+            "| 本人開了幾則對話 | %d | 一次對話裡可能來回很多次 |" % ef.get("human_sessions", 0),
+            "| 本人打出去幾則訊息 | %d | 真正按發送的次數 |" % ef.get("human_user_messages", 0),
+            "| 平均一則對話幾則訊息 | %s | 低不一定比較好 |" % ef.get("messages_per_session", 0),
+        ]
+        by = ef.get("human_messages_by_source") or {}
+        for k, v in by.items():
+            rows.append("| 其中 `%s` 發言 | %d | 只描述樣本 |" % (k, v))
+        tok = ef.get("tokens_output") or 0
+        miss = "、".join("`%s`" % x for x in (ef.get("tokens_unavailable_sources") or [])) or "無"
+        src = "、".join("`%s`" % x for x in (ef.get("tokens_from_sources") or [])) or "無"
+        if tok:
+            rows.append(
+                "| Token（模型輸出，僅 Claude／Codex） | %d | 輸入含大量重複 context，不拿來比；沒有用量的來源：%s |"
+                % (tok, miss))
+        else:
+            rows.append("| Token | 本機掃不到 | 有用量紀錄的來源：%s；沒有的來源：%s |" % (src, miss))
+        L += rows
+        L.append("")
 
     L += ["## 工具使用（只算本人操作）", ""]
     L += ["總呼叫 %d 次，用到 %d 種工具，其中 MCP／外掛工具佔 %.1f%%。"
@@ -827,7 +1224,8 @@ def main():
     ap.add_argument("--since", help="起始日 YYYY-MM-DD")
     ap.add_argument("--until", help="結束日 YYYY-MM-DD，預設今天")
     ap.add_argument("--out", help="輸出目錄，預設 evidence/<起日>_<迄日>")
-    ap.add_argument("--source", default="all", help="claude-code,codex 或 all")
+    ap.add_argument("--source", default="all",
+                    help="claude-code,codex,antigravity 或 all（有裝才掃，沒裝就略過）")
     ap.add_argument("--cases", type=int, default=8, help="本人案例抽樣數，預設 8")
     ap.add_argument("--no-content", action="store_true", help="不輸出任何原文，只出計數")
     ap.add_argument("--claude-root", default=os.path.join(HOME, ".claude"))
@@ -845,7 +1243,7 @@ def main():
         since = dt.datetime.combine(until.date() - dt.timedelta(days=days - 1), dt.time.min, tzinfo=tz)
 
     wanted = ({x.strip() for x in args.source.split(",")}
-              if args.source != "all" else {"claude-code", "codex"})
+              if args.source != "all" else {"claude-code", "codex", "antigravity"})
     sessions, used = [], []
     if "claude-code" in wanted and os.path.isdir(args.claude_root):
         got = load_claude_code(args.claude_root, since, until)
@@ -855,6 +1253,15 @@ def main():
         got = load_codex(args.codex_root, since, until)
         sessions += got
         used.append({"name": "codex", "root": redact(args.codex_root), "sessions": len(got)})
+    if "antigravity" in wanted:
+        got = load_antigravity(since, until)
+        if got or os.path.isdir(os.path.join(HOME, ".gemini", "antigravity")):
+            sessions += got
+            used.append({
+                "name": "antigravity",
+                "root": redact(os.path.join(HOME, ".gemini", "antigravity")),
+                "sessions": len(got),
+            })
     if not used:
         print("找不到可讀的紀錄目錄，檢查 --claude-root / --codex-root，"
               "或見 references/log-sources.md。", file=sys.stderr)
@@ -871,11 +1278,17 @@ def main():
         fh.write(render_cases(sessions, args.cases, not args.no_content) + "\n")
 
     sp, h = summary["session_split"], summary["human_usage"]
+    ef = summary.get("effort") or {}
     print("證據包完成：%s" % out)
-    print("  本人對話 %d 則（自動化 %d、子代理 %d）｜工具呼叫 %d 次｜"
+    print("  本人對話 %d 則、發言 %d 次（自動化 %d、子代理 %d）｜工具呼叫 %d 次｜"
           "寫入檔案 %d 個｜可複用資產 %d 個"
-          % (sp["human"], sp["automation"], sp["subagent"], h["tool_calls"],
+          % (sp["human"], h["user_messages"], sp["automation"], sp["subagent"], h["tool_calls"],
              summary["artifacts"]["files_written"], summary["artifacts"]["durable_write_count"]))
+    if ef.get("tokens_output"):
+        print("  Token 輸出 %d（僅 %s；%s 掃不到）"
+              % (ef["tokens_output"],
+                 ",".join(ef.get("tokens_from_sources") or []) or "無",
+                 ",".join(ef.get("tokens_unavailable_sources") or []) or "無"))
     if sp["human"] == 0:
         print("  這個期間沒有本人操作的紀錄。分析階段請寫「無法定級」，不要拿 LV0 當預設。")
 

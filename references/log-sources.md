@@ -12,8 +12,8 @@
 | Claude Code（含 Desktop、CLI、Agent SDK） | `~/.claude/projects/<專案>/<session>.jsonl` | ✅ 已支援 |
 | Codex（Desktop、CLI、exec） | `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl` | ✅ 已支援 |
 | Codex 封存 | `~/.codex/archived_sessions/…` | ✅ 已支援 |
+| Antigravity（桌面 ＋ CLI） | `~/.gemini/antigravity/conversations/*.db`、`~/.gemini/antigravity-cli/conversations/*.db` | ✅ 已支援（有裝才掃） |
 | Cursor | `~/Library/Application Support/Cursor/`（SQLite） | ⬜ 未支援，歡迎 PR |
-| Gemini CLI / Antigravity | `~/.gemini/`、`~/.antigravity/` | ⬜ 未支援，歡迎 PR |
 | ChatGPT 網頁版 | 無本機紀錄 | ❌ 只能走匯出檔或貼上模式 |
 | 公司內部 AI 工具 | 依實作 | ❌ 各自實作 collector |
 
@@ -126,6 +126,39 @@ Codex 不用 Write／Edit 工具，走 `apply_patch`，檔名寫在指令內容�
 
 注意 `arguments` 解出來的字串裡，換行可能還是字面上的 `\n`，
 用 `\S+` 抓檔名會把後面的 diff 一起吃進去。要排除反斜線。
+
+---
+
+## Antigravity
+
+有裝才掃。目錄不存在就略過，報告開頭寫「沒讀到 Antigravity」。
+桌面與 CLI 算**同一個入口** `antigravity`，driver 再分成 `antigravity` / `antigravity-cli`。
+
+每一則對話一個 sqlite：`~/.gemini/antigravity/conversations/<uuid>.db`。
+本體是 nested protobuf，不能當 JSON 讀。`collect.py` 用標準庫把 UTF-8 字串遞迴抽出來。
+
+### 2026-09 本機實測
+
+| 欄位 | 值 | 意思 |
+| :-- | :-- | :-- |
+| `trajectory_meta.source` | `1` | 桌面 |
+| | `17` | CLI |
+| `steps.step_type` | `14` | 本人發言 |
+| | `15` | 模型／工具步驟（`view_file`、`run_command` 等） |
+| 註解標題 | `annotations/<uuid>.pbtxt` 的 `title:"…"` | 案例名稱 |
+
+同一窗口實測：桌面 118 則、CLI 196 則進入證據包；`parent_references` 有列的標成 subagent。
+
+Token 用量不在這份 sqlite 裡，報告只列 Claude／Codex 讀得到的**模型輸出** token，並註明 Antigravity 掃不到。
+
+分流規則：
+
+```
+parent_references 有列 → subagent
+其餘                   → human
+```
+
+Antigravity 預設是人在鍵盤前用的；排程／bot 若之後出現獨立 driver，再補 automation。
 
 ---
 
