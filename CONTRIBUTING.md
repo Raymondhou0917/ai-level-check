@@ -8,6 +8,8 @@
 
 ---
 
+還沒做的事集中在 [ROADMAP.md](ROADMAP.md)。先對一下你要補的是不是清單上的項目，避免兩個人做同一件事。
+
 ## 提交前先想一件事
 
 > 我要補的，是「新的判準」，還是「現有判準的說法不同」？
@@ -27,8 +29,8 @@
 
 ### 1. 新來源的 collector（最需要）
 
-目前只支援 Claude Code 與 Codex。Cursor、Gemini CLI、Antigravity、
-公司內部工具都還沒有。
+目前支援 Claude Code、Codex、Antigravity。Cursor、Gemini CLI、
+公司內部工具都還沒有。還沒做完的項目見 [ROADMAP.md](ROADMAP.md)。
 
 寫法見 [references/log-sources.md](references/log-sources.md#想加一個新來源)。
 

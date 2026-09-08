@@ -7,7 +7,7 @@
 ### How good is your AI usage, really? Let AI read the record.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.3-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.4-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![en](https://img.shields.io/badge/en-English-1b6ca8.svg)](README.en.md)
@@ -39,7 +39,7 @@ It scans the logs Claude Code, Codex, and Antigravity already left on disk:
 how this person delegated, which tools they called, how they corrected mistakes, and what they shipped.
 Then it writes a **case-backed, traceable** AI-usage report.
 
-**LV0–LV5 usage levels · four system checks · 16 usage personas · one printable HTML report**
+**LV0–LV5 usage levels · org-strength and maturity · four system checks · 16 usage personas · one printable HTML report**
 
 Works with Claude Code, Codex, Cursor, and any agent that can read Markdown.
 
@@ -334,7 +334,7 @@ ai-level-check/
 ├── prompts/chat-paste.md           paste-mode prompt
 ├── templates/report-skeleton.html  printable single-file report
 ├── docs/                           fictional public demo
-├── evals/report-checklist.md       16 “did the report follow the rules” checks
+├── evals/report-checklist.md       19 “did the report follow the rules” checks
 └── install/                        Claude Code · Codex · Cursor · team
 ```
 
@@ -417,6 +417,7 @@ The two contributions we need most:
   A PR needs measured field distributions. Guessed fields poison every judgement downstream.
 - **Domain criteria.** In your job, what does “using it well” look like in the log?
 
+Unfinished work is listed in [ROADMAP.md](ROADMAP.md) (Traditional Chinese; English PRs are fine).
 Read [CONTRIBUTING.md](CONTRIBUTING.md) first. We explicitly reject ranking, central scanning, and writing personas as a hierarchy.
 
 ---
@@ -438,19 +439,9 @@ What actually makes it better is a [misjudgement report](.github/ISSUE_TEMPLATE/
 
 ---
 
-## Acknowledgements
+## Credits
 
-The starting point was a meal with **[Chen Jing-ru of Inorder Studio](https://www.inorder.studio/about000)**.
-
-The question was: how does a company know where a team’s AI ability actually is?
-Surveys lie. Spoken reports lie more, because people cannot judge this well.
-The conclusion: **let AI read AI’s usage logs.**
-
-He first wrote a prompt you could paste into an AI.
-
-What this repo adds is a system that can keep running: real local logs, a split between human and machine text, public personas, and git pinning each period.
-
-Then it was opened so people in other jobs can maintain it, and it can become a general AI-usage review.
+This tool was drafted by [Chen Jing-ru of Inorder Studio](https://www.inorder.studio/), then fully expanded and open-sourced by [Raymond Hou (雷蒙)](https://raymondhouch.com/). It started over a meal: how does a company know where a team’s AI ability actually is? Surveys are unreliable; spoken reports are worse. The conclusion was that AI should read AI’s usage logs — a [review prompt](https://inorders.notion.site/ai-prompt) you can paste into an AI, plus a Skill that runs and writes a report. Raymond added local multi-agent logs, a split between human and machine text, usage personas, automation-level review, and git pinning for each period.
 
 ---
 

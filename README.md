@@ -7,7 +7,7 @@
 ### 你敢加入挑戰嗎？讓 AI 來評估你／員工／主管／老闆的 AI 能力
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.3-brightgreen.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.4-brightgreen.svg)](CHANGELOG.md)
 [![Sources](https://img.shields.io/badge/sources-Claude_Code_%7C_Codex_%7C_Antigravity-blue.svg)](references/log-sources.md)
 [![zh-TW](https://img.shields.io/badge/zh--TW-Taiwan-e4002b.svg)](README.md)
 [![en](https://img.shields.io/badge/en-English-1b6ca8.svg)](README.en.md)
@@ -39,7 +39,7 @@
 看這個人怎麼下指令、呼叫了哪些工具、怎麼修正、做出什麼成果，
 產出一份 **有案例、可追溯** 的 AI 使用能力報告。
 
-**LV0–LV5 使用等級 · 四項系統驗證 · 16 型人物志 · 單檔 HTML 報告書**
+**LV0–LV5 使用等級 · 組織強度與應用成熟度 · 四項系統驗證 · 16 型人物志 · 單檔 HTML 報告書**
 
 給 Claude Code、Codex、Cursor 和任何能讀 Markdown 的 AI agent 用。
 
@@ -345,7 +345,7 @@ ai-level-check/
 │   └── publish.sh                  推報告進 private repo（不 force push、不覆蓋、推前掃金鑰）
 ├── references/
 │   ├── levels.md                   LV0–LV5 判準 ＋ 證據包欄位對照表
-│   ├── evidence-rules.md           證據歸屬、公平判斷、四種判定量表、七項核心能力
+│   ├── evidence-rules.md           證據歸屬、公平判斷、組織強度、事業掌握、應用成熟度
 │   ├── automation-gears.md         五種自動化齒輪的判準與偵測規則
 │   ├── personas.md                 16 型人物志
 │   ├── log-sources.md              各家紀錄格式的實測文件
@@ -445,6 +445,7 @@ python3 scripts/collect.py --days 14 --no-content
   送 PR 請附欄位分布的實測數字，猜出來的欄位會讓所有下游判斷一起錯。
 - **領域判準**：在你的職能裡，「用得好」在紀錄裡長什麼樣？
 
+還沒做完的項目見 [ROADMAP.md](ROADMAP.md)，歡迎直接開 PR。
 提交前請先讀 [CONTRIBUTING.md](CONTRIBUTING.md)，裡面也列了明確不收的東西
 （排名功能、集中掃描、把分型寫成有高低之分）。
 
@@ -470,22 +471,9 @@ python3 scripts/collect.py --days 14 --no-content
 
 ---
 
-## 致謝
+## 致謝＆製作
 
-這套機制的起點，是 **[有序設計的陳敬儒](https://www.inorder.studio/about000)** 約我吃飯聊出來的。
-
-那天我們在聊一件事：公司要怎麼知道團隊的 AI 能力到哪裡？
-問卷不準，口頭報告更不準，因為人本來就評不準這件事。
-聊到最後結論是——**應該讓 AI 去讀 AI 的使用紀錄**。
-
-他先做了簡單的實作，寫成一份可以直接貼給 AI 的檢核 Prompt。
-
-我做的是把它從「一次性的貼上」延伸成一套可以長期運作的東西：
-接上本機真實紀錄、把人打的字跟機器打的字分開、加上可公開的人物志分型、
-再用 git 把每一期釘住。
-
-然後開源出來，希望各行各業的人一起來維護，
-讓它變成一套真的通用的「AI 能力評估分析報告」。
+這套工具由 [有序設計的陳敬儒](https://www.inorder.studio/) 起草，並由 [雷蒙（侯智薰）](https://raymondhouch.com/) 完整優化與擴寫開源，背景是某天吃飯時聊到：公司要怎麼知道團隊的 AI 能力到哪裡？問卷不準、口頭報告更不準；結論是應該讓 AI 去讀 AI 的使用紀錄：一份可以貼給 AI 的 [檢核 Prompt](https://inorders.notion.site/ai-prompt)、執行並輸出報告的 [Skill](https://github.com/Raymondhou0917/ai-level-check)；雷蒙補上本機多 Agent 的紀錄、人機分流、人物志分型、自動化使用評級，以及用 git 把每一期的報告釘住。
 
 ---
 

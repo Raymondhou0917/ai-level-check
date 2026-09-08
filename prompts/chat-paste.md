@@ -27,6 +27,7 @@
 正本：https://github.com/Raymondhou0917/ai-level-check
 請抓這些檔當判準與版型，不要只靠這則摘要：
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/levels.md
+- https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/evidence-rules.md
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/personas.md
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/privacy.md
 - https://raw.githubusercontent.com/Raymondhou0917/ai-level-check/main/references/report-design.md
@@ -87,7 +88,7 @@
 2. 三欄白話：擅長什麼（最多四句，附案例）、沒做好什麼（最多兩句）、下一步只寫一件
 3. LV0–LV5 階梯，標出本次位置
 4. 人物志代號 + 「風格不是分數」
-5. 詳細六節：工作實例表（表格，不要列點）、下一步、能力細項、工作系統、值得留下、三句結論
+5. 詳細六節：工作實例表（表格，不要列點）、下一步、能力細項、工作系統與組織強度（先對照表、再獨立寫「AI 對事業背景的掌握」，沒讀到也寫尚未觀察）、值得保留與制度化潛力（目前／以後怎麼用必須寫：一次性用法／日常輔助／可複用資產／制度化流程）、三句結論
 
 每個判斷指得出「案例 N」。案例用表格：編號、這件工作、誰在做、用哪個入口、大概日期。
 格子排版用 minmax(0,1fr)，不要讓卡片撐破主欄。

@@ -50,7 +50,7 @@ def toc_html(current):
         ("#s2", "02", "下一步"),
         ("#s3", "03", "能力細項"),
         ("#s4", "04", "工作系統"),
-        ("#s5", "05", "值得留下"),
+        ("#s5", "05", "制度化潛力"),
         ("#s6", "06", "結論"),
     ]
     ch = "\n  ".join(
@@ -143,6 +143,39 @@ def checks(items):
   </div>"""
         )
     return '<div class="check-row">\n' + "\n".join(cells) + "\n</div>"
+
+
+def org_table(rows, intro=None):
+    """rows: (work, understood, evidence, problems, strength_html)."""
+    if intro is None:
+        intro = (
+            "看的是：目的、驗收、例外、交接，有沒有等效做法。"
+            "不要求做成公司文件格式。能說明原則、能解釋取捨、已有實作，三件事分開寫，不能互相替代。"
+        )
+    trs = []
+    for work, understood, evidence, problems, strength in rows:
+        trs.append(
+            "  <tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
+            % (work, understood, evidence, problems, strength)
+        )
+    return (
+        "<h3>這幾項工作，有沒有公司級的等效機制</h3>\n"
+        "<p>%s</p>\n"
+        '<div class="scroll wide">\n<table>\n'
+        "<thead><tr><th>哪項工作</th><th>已理解哪些要求</th><th>依據</th>"
+        "<th>還有哪些問題</th><th>這個判斷有多少依據</th></tr></thead>\n"
+        "<tbody>\n%s\n</tbody>\n</table>\n</div>\n"
+    ) % (intro, "\n".join(trs))
+
+
+def ai_grasp(text):
+    return "<h3>AI 對事業背景的掌握</h3>\n<p>%s</p>\n" % text
+
+
+MATURITY_NOTE = (
+    '<p class="note">成熟度四級，寫全名：一次性用法／日常輔助／可複用資產／制度化流程。'
+    "成熟度不是能力分數，也不必把每件事都推成制度化。</p>\n"
+)
 
 
 def page(filename, title, description, body):
@@ -384,7 +417,11 @@ BODY_LV1 = f"""
 </table>
 </div>
 
-<h2 id="s4">四、工作系統長什麼樣子</h2>
+<h2 id="s4">四、工作系統與組織強度對照</h2>
+{org_table([
+    ("活動頁標題與週報開頭", "知道給誰看、語氣要像自己，但完成標準常到第二輪才補", "案例 1、2、4", "沒有留下下次能直接套的規格；也沒考慮別人怎麼接手", '<span class="tag warn">中</span>'),
+])}
+{ai_grasp("這次的 AI 主要靠本串他講的語氣和活動名稱，沒讀到自建的品牌頁或活動規格。提到活動名稱，不代表它理解這門生意。單次表現也不能當成以後都會懂。")}
 <h3>換一家 AI，能不能接著做</h3>
 <p>這次只讀到 ChatGPT 網頁。沒有共用規則檔，換一個視窗就要把背景再說一次。</p>
 {habitat(
@@ -407,14 +444,17 @@ BODY_LV1 = f"""
     (False, "尚未觀察", "出事找得到人"),
 ])}
 
-<h2 id="s5">五、值得留下的做法</h2>
+<h2 id="s5">五、值得保留與制度化潛力</h2>
+{MATURITY_NOTE}
 <div class="scroll">
 <table>
-<thead><tr><th>做法</th><th>現在怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
+<thead><tr><th>做法</th><th>目前怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
 <tbody>
   <tr>
     <td>不滿意就再問，不把第一版當定稿</td>
-    <td>已經在用</td><td>把「再問」改成「指出哪一句不行」</td><td>見下一節那三行完成標準</td>
+    <td>日常輔助：做法還在他腦子裡</td>
+    <td>可複用資產：把「指出哪一句不行」寫進常用開頭</td>
+    <td>見下一節那三行完成標準</td>
   </tr>
 </tbody>
 </table>
@@ -628,7 +668,12 @@ BODY_LV3 = f"""
 </table>
 </div>
 
-<h2 id="s4">四、工作系統長什麼樣子</h2>
+<h2 id="s4">四、工作系統與組織強度對照</h2>
+{org_table([
+    ("改稿對色票", "色票要對 token 名稱；改完要自己開頁面對一次", "案例 2、3", "做法還在對話裡，還沒寫進檔；也還沒寫給未來接手的人看", '<span class="tag high">高</span>'),
+    ("獨立設計交付", "第一次交代就含範圍與完成標準", "案例 1、4", "還沒考慮成果存放與版本怎麼交給下一個自己", '<span class="tag warn">中</span>'),
+])}
+{ai_grasp("Claude 有讀到他這次貼的色票與頁面，但沒有一份穩定的設計系統文件可對。不能因為它叫得出專案名，就當成已經掌握工作室定位。單次改稿成功，也不等於以後都會對。")}
 <h3>換一家 AI，能不能接著做</h3>
 <p>這次只讀到 Claude。沒有第二個入口的本人操作，也還沒有一份兩邊都讀得到的規則。這不擋第 3 級。</p>
 {habitat(
@@ -652,18 +697,23 @@ BODY_LV3 = f"""
 ])}
 <p class="note">四項沒測不自動降級。現在也還沒有一套「系統」需要測。</p>
 
-<h2 id="s5">五、值得留下的做法</h2>
+<h2 id="s5">五、值得保留與制度化潛力</h2>
+{MATURITY_NOTE}
 <div class="scroll">
 <table>
-<thead><tr><th>做法</th><th>現在怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
+<thead><tr><th>做法</th><th>目前怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
 <tbody>
   <tr>
     <td>色票不對就列 token 名稱，不說重寫整頁（案例 2）</td>
-    <td>已經在用</td><td>寫進改稿 SKILL 的「修正時」一節</td><td>本週把這句搬進檔案</td>
+    <td>日常輔助：還在對話裡重複講</td>
+    <td>可複用資產：寫進改稿 SKILL 的「修正時」一節</td>
+    <td>本週把這句搬進檔案</td>
   </tr>
   <tr>
     <td>改完自己開頁面對一次（案例 3）</td>
-    <td>已經在用</td><td>當成完成標準最後一行</td><td>維持</td>
+    <td>日常輔助</td>
+    <td>可複用資產：當成完成標準最後一行</td>
+    <td>維持</td>
   </tr>
 </tbody>
 </table>
@@ -871,7 +921,12 @@ BODY_LV4 = f"""
 </table>
 </div>
 
-<h2 id="s4">四、工作系統長什麼樣子</h2>
+<h2 id="s4">四、工作系統與組織強度對照</h2>
+{org_table([
+    ("週報草稿", "觸發時間、資料來源、完成標準開始成形；檔頭還沒寫維護人與出錯找誰", "案例 1、5", "交接四欄未填，陌生人只看文件做不完", '<span class="tag high">高</span>'),
+    ("FAQ 模板", "知道可以走同一條 skill 路，不要手貼", "案例 1", "還沒搬過去，目前仍是構想", '<span class="tag warn">中</span>'),
+])}
+{ai_grasp("兩個入口讀同一份週報說明，這次有實際用到專案脈絡，不是只喊得出產品名。缺資料會不會停，還沒隔離測過，不能寫成已經掌握。")}
 <h3>換一家 AI，能不能接著做</h3>
 <p>兩個入口有本人操作，說明指向同一份檔。這對第 4 級夠了。故障當天立刻切，這 14 天還沒碰到。</p>
 {habitat(
@@ -910,22 +965,29 @@ BODY_LV4 = f"""
 </div>
 <p class="note">四項沒過不自動降回第 3 級。第 5 級要等例外迴路真的在用，不是把格子填滿。</p>
 
-<h2 id="s5">五、值得留下的做法</h2>
+<h2 id="s5">五、值得保留與制度化潛力</h2>
+{MATURITY_NOTE}
 <div class="scroll">
 <table>
-<thead><tr><th>做法</th><th>現在怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
+<thead><tr><th>做法</th><th>目前怎麼用</th><th>以後可以怎麼用</th><th>下一步</th></tr></thead>
 <tbody>
   <tr>
     <td>走通之後寫成 SKILL，下一則只補差異（案例 1）</td>
-    <td>已經在用</td><td>FAQ 模板也改走這條，不要手貼</td><td>維持週報；FAQ 下次再搬</td>
+    <td>可複用資產</td>
+    <td>制度化流程：FAQ 模板也改走這條，不要手貼</td>
+    <td>維持週報；FAQ 下次再搬</td>
   </tr>
   <tr>
     <td>排程打開前先用舊稿跑一遍（案例 2）</td>
-    <td>已經在用</td><td>任何會自己跑的東西都先走這關</td><td>維持</td>
+    <td>可複用資產</td>
+    <td>制度化流程：任何會自己跑的東西都先走這關</td>
+    <td>維持</td>
   </tr>
   <tr>
     <td>兩個入口讀同一份說明，不各抄一份（案例 3）</td>
-    <td>已經在用</td><td>新入口只接同一份檔</td><td>維持。不必為了報告再接一家</td>
+    <td>可複用資產</td>
+    <td>制度化流程：新入口只接同一份檔</td>
+    <td>維持。不必為了報告再接一家</td>
   </tr>
 </tbody>
 </table>

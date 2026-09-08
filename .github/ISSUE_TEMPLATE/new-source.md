@@ -1,6 +1,6 @@
 ---
 name: 新增紀錄來源
-about: 想支援 Cursor、Gemini、Antigravity 或公司內部的 AI 工具
+about: 想支援 Cursor、Gemini CLI 或公司內部的 AI 工具
 title: "[collector] 支援 <工具名稱>"
 labels: collector
 ---

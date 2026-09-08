@@ -2,6 +2,20 @@
 
 本專案的版本紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)。
 
+## [0.4.4] - 2026-09-08
+
+### 修正
+
+- **原版三塊重新釘進報告**：工作系統／組織強度對照、AI 對事業背景的掌握、應用成熟度（一次性用法 → 制度化流程）。規格目錄本來就有位置，但真報告常被寫成「系統長什麼樣子／值得留下」，只用多棲圖和「已經在用」帶過。判準寫回 [`evidence-rules.md`](references/evidence-rules.md)；第 4 節順序改為對照表 → AI 掌握 → 多棲／齒輪 → 系統驗證；第 5 節必須寫成熟度全名。評測新增 E1–E3。
+
+### 新增
+
+- **[`ROADMAP.md`](ROADMAP.md)**：公開後續開發清單（呈現、來源覆蓋、判準公平、團隊導入），讓外人知道還沒做什麼、該開 Issue 還是直接 PR。
+
+### 文件
+
+- **致謝＆製作**：由 [有序設計陳敬儒](https://www.inorder.studio/) 起草，[雷蒙](https://raymondhouch.com/) 擴寫開源；連到原版 [檢核 Prompt](https://inorders.notion.site/ai-prompt)。
+
 ## [0.4.3] - 2026-09-08
 
 ### 調整

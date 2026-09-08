@@ -15,6 +15,9 @@ evidence/
 reports/*
 !reports/.gitkeep
 
+# 本機草稿與生圖，不進公開 repo
+_local/
+
 # macOS
 .DS_Store
 
