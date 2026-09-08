@@ -190,27 +190,39 @@
   .repo-link svg{flex:none}
   .repo-link:hover{border-bottom-color:var(--accent)}
   .meta-dot{margin:0 .55em;color:var(--muted)}
-  .demo-hint{display:flex;flex-direction:column;align-items:center;margin:0 0 .15em;
-             color:var(--accent);line-height:.55;font-size:1.15rem;font-weight:700}
-  .demo-lead{text-align:center;font-family:var(--serif);font-size:1.05rem;margin:0 0 1em;color:var(--ink)}
-  .demo-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:0 0 2.4em}
+  .tagline{word-break:keep-all}
+  .demo-hint{display:flex;flex-direction:column;align-items:center;margin:.2em 0 1.25em;
+             color:var(--accent);line-height:.7;font-size:1.15rem;font-weight:700}
+  .demo-lead{text-align:center;font-family:var(--serif);font-size:1.05rem;
+             margin:.55em 0 1.2em;color:var(--ink)}
+  .demo-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin:0 0 2.4em}
   .demo-cards a.card-lift{display:flex;flex-direction:column;padding:1.2em 1.2em 1.15em;
                           text-decoration:none;color:inherit;cursor:pointer;
-                          background:var(--paper);border:1px solid var(--line);border-radius:10px}
+                          background:var(--paper);border:1px solid rgba(47,93,98,.18);
+                          border-radius:10px;overflow:visible;
+                          box-shadow:0 4px 10px rgba(28,28,30,.07),0 16px 32px -10px rgba(47,93,98,.34)}
   .demo-cards .lv{font-family:var(--serif);font-size:1.45rem;color:var(--accent);margin:0 0 .15em}
   .demo-cards .name{font-family:var(--serif);font-size:1.02rem;color:var(--ink);margin:0 0 .4em;font-weight:600}
   .demo-cards p{margin:0;font-size:.88rem;color:var(--ink-2);line-height:1.55}
   .demo-cards .go{margin-top:auto;padding-top:.9em;font-size:.82rem;font-weight:700;
                   letter-spacing:.04em;color:var(--accent)}
   .demo-cards .go-arrow{display:inline-block;margin-left:.2em}
-  .card-lift{position:relative;transition:translate .16s ease-out,border-color .16s ease-out}
-  .card-lift::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-                    box-shadow:0 3px 6px rgba(47,93,98,.08),0 22px 40px -16px rgba(47,93,98,.28);
-                    opacity:0;transition:opacity .18s ease-out}
-  .card-lift::before{content:"";position:absolute;inset:0 0 -8px;z-index:-1;border-radius:inherit}
-  a.card-lift:hover{translate:0 -4px;border-color:var(--accent)}
-  a.card-lift:hover::after{opacity:1}
-  a.card-lift:hover .go-arrow{animation:go-nudge .9s ease-in-out infinite}
+  .card-lift{position:relative;z-index:0;isolation:isolate;
+             transition:translate .16s ease-out,box-shadow .16s ease-out}
+  .card-lift::before{content:"";position:absolute;inset:-1.5px;border-radius:12px;
+                    padding:1.5px;pointer-events:none;z-index:1;
+                    background:linear-gradient(90deg,transparent 0,var(--accent) 50%,transparent 100%);
+                    background-size:220% 100%;
+                    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+                    -webkit-mask-composite:xor;mask-composite:exclude;
+                    animation:card-orbit 2.4s linear infinite}
+  .demo-cards a.card-lift:nth-child(2)::before{animation-delay:-.8s}
+  .demo-cards a.card-lift:nth-child(3)::before{animation-delay:-1.6s}
+  a.card-lift:hover,a.card-lift:focus-visible{translate:0 -4px;
+    box-shadow:0 6px 10px rgba(28,28,30,.06),0 22px 36px -14px rgba(47,93,98,.38)}
+  a.card-lift:active{translate:0 -1px}
+  a.card-lift:hover .go-arrow,a.card-lift:focus-visible .go-arrow{
+    animation:go-nudge .9s ease-in-out infinite}
   @keyframes chevron-flow{
     0%,100%{opacity:.18;transform:translateY(0)}
     40%{opacity:1;transform:translateY(3px)}
@@ -220,8 +232,12 @@
     0%,100%{transform:translateX(0)}
     50%{transform:translateX(4px)}
   }
+  @keyframes card-orbit{
+    0%{background-position:120% 0}
+    100%{background-position:-120% 0}
+  }
   @media (prefers-reduced-motion:reduce){
-    .card-lift,.card-lift::after{transition-duration:.01ms}
+    .card-lift,.card-lift::before{transition-duration:.01ms;animation:none}
     .chevron-flow{animation:none;opacity:.45}
     a.card-lift:hover .go-arrow{animation:none}
   }
@@ -231,4 +247,7 @@
   @media (max-width:800px){
     .demo-cards{grid-template-columns:1fr}
     .shot-grid{grid-template-columns:1fr}
+    .meta{display:flex;flex-direction:column;align-items:flex-start;gap:.45em}
+    .meta-dot{display:none}
+    .tagline{display:block;width:100%;line-height:1.5}
   }
