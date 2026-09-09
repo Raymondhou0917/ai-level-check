@@ -81,6 +81,10 @@ def excerpt(text, limit=280):
 NOISE_PREFIX = (
     "<system-reminder", "<command-name", "<command-message", "<local-command",
     "<user-prompt-submit-hook", "<session-start-hook", "<ci-monitor-event",
+    # Claude Code Monitor 看門事件以 user 身分寫進 transcript，
+    # 開頭是裸的 <task-notification>，沒有被 <system-reminder> 包住。
+    "<task-notification",
+    "[SYSTEM NOTIFICATION - NOT USER INPUT]",
     "Caveat:", "[Request interrupted", "[No response requested]", "API Error",
     "<bash-input>", "<bash-stdout>", "<bash-stderr>", ">>> TRANSCRIPT",
     # Codex 會把可安裝的 plugin 清單塞進 user message；

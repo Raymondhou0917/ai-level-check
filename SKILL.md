@@ -1,6 +1,6 @@
 ---
 name: ai-level-check
-version: 0.4.5
+version: 0.4.6
 description: |
   「AI 幾級了」：讀本機真實的 AI 對話紀錄，產出一份有證據、可追溯的 AI 使用能力報告。
   掃 Claude Code、Codex、Antigravity 等 agent 留在硬碟上的紀錄，看這個人怎麼下指令、呼叫了什麼工具、

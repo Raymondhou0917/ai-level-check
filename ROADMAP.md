@@ -1,7 +1,7 @@
 # ROADMAP
 
-> 最後更新：2026-09-08
-> 專案狀態：0.4.5。骨架能跑，來源覆蓋與報告呈現還有缺口。歡迎直接開 PR。
+> 最後更新：2026-09-09
+> 專案狀態：0.4.6。骨架能跑，來源覆蓋與報告呈現還有缺口。歡迎直接開 PR。
 
 Unfinished work lives here so people do not duplicate effort. English PRs are welcome; this file is in Traditional Chinese because the rest of the maintainer notes are.
 

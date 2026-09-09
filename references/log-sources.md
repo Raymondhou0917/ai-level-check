@@ -76,6 +76,10 @@ Claude Code 會把 `<system-reminder>`、hook 輸出、CLAUDE.md 注入，
 所以必須**逐 block 過濾**，不能把 content 陣列整包接起來當使用者說的話。
 `collect.py` 的 `clean_user_text()` 就在做這件事。
 
+另外，Claude Code Monitor 的看門事件會以 **user 身分**寫進 transcript，
+內容開頭是裸的 `<task-notification>` 或 `[SYSTEM NOTIFICATION - NOT USER INPUT]`，
+沒有被 `<system-reminder>` 包住。這兩種也要濾掉，否則會被算進「本人發言」。
+
 ---
 
 ## Codex

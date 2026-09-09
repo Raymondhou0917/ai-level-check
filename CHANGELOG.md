@@ -2,6 +2,13 @@
 
 本專案的版本紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)。
 
+## [0.4.6] - 2026-09-09
+
+### 修正
+
+- **Windows 非 UTF-8 locale 會弄壞證據檔。** `collect.py` 讀寫 transcript、annotation、`summary.json`、`metrics.md`、`cases.md` 時改為明確指定 `encoding=utf-8`。感謝 [ian0953329333](https://github.com/ian0953329333) 的 #2／#3。
+- **Claude Code Monitor 的看門事件被算進本人發言。** `NOISE_PREFIX` 補上 `<task-notification` 與 `[SYSTEM NOTIFICATION - NOT USER INPUT]`。對話則數不變，本人發言數會下降。感謝 [iweace0718](https://github.com/iweace0718) 的 #1。
+
 ## [0.4.5] - 2026-09-08
 
 ### 修正
