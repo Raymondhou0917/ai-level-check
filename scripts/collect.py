@@ -455,7 +455,7 @@ def proto_unix_ts(blob):
 
 def iter_jsonl(path):
     try:
-        with open(path, "r", errors="ignore") as fh:
+        with open(path, "r", encoding="utf-8", errors="ignore") as fh:
             for line in fh:
                 line = line.strip()
                 if not line:
@@ -694,7 +694,7 @@ def agy_title(ann_path):
     if not os.path.isfile(ann_path):
         return ""
     try:
-        text = open(ann_path, errors="ignore").read(4000)
+        text = open(ann_path, encoding="utf-8", errors="ignore").read(4000)
     except OSError:
         return ""
     m = AGY_TITLE_RE.search(text)
@@ -1270,11 +1270,11 @@ def main():
     os.makedirs(out, exist_ok=True)
 
     summary = build_summary(sessions, since, until, used)
-    with open(os.path.join(out, "summary.json"), "w") as fh:
+    with open(os.path.join(out, "summary.json"), "w", encoding="utf-8") as fh:
         json.dump(summary, fh, ensure_ascii=False, indent=2)
-    with open(os.path.join(out, "metrics.md"), "w") as fh:
+    with open(os.path.join(out, "metrics.md"), "w", encoding="utf-8") as fh:
         fh.write(render_metrics(summary) + "\n")
-    with open(os.path.join(out, "cases.md"), "w") as fh:
+    with open(os.path.join(out, "cases.md"), "w", encoding="utf-8") as fh:
         fh.write(render_cases(sessions, args.cases, not args.no_content) + "\n")
 
     sp, h = summary["session_split"], summary["human_usage"]
