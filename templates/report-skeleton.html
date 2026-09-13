@@ -35,6 +35,7 @@
   small,.note{font-size:.86rem;color:var(--ink-3)}
 
   .meta{font-size:.9rem;color:var(--ink-2);margin-bottom:2em}
+  .lede{font-size:1.05rem;color:var(--ink);margin:0 0 1.6em}
   .scope{border-left:3px solid var(--accent);padding:.2em 0 .2em 1em;margin:0 0 2.4em;color:var(--ink-2)}
 
   /* 綜合評級 */
@@ -43,6 +44,18 @@
   .verdict .lv{font-family:var(--serif);font-size:2.6rem;line-height:1}
   .verdict .name{font-size:1.1rem;color:var(--ink-2)}
   .verdict .gap{flex:1 1 100%;font-size:.94rem;color:var(--ink-2);margin:0}
+
+  /* 一眼看懂三欄：擅長／沒做好／下一步（與 docs/assets/report.css 同步） */
+  .glance{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;
+          margin:0 0 2.4em;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .glance>section{padding:1.3em 1.4em 1.4em 0}
+  .glance>section+section{border-left:1px solid var(--line);padding-left:1.4em}
+  .glance h3{font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.12em;
+             text-transform:uppercase;color:var(--ink-3);margin:0 0 .7em;padding:0;border:0}
+  .glance ul{margin:0;padding:0 0 0 1.1em}
+  .glance li{margin:0 0 .45em;font-size:.94rem}
+  .glance .do{margin:0;font-size:.98rem;color:var(--ink)}
+  .glance .do b{color:var(--warn);font-weight:600}
 
   /* 六級階梯 */
   .ladder{list-style:none;margin:1.6em 0;padding:0;border-top:1px solid var(--line-2)}
@@ -83,6 +96,7 @@
   .bento-axes article:nth-child(-n+2){border-bottom:1px solid var(--line)}
   .bento-axes article:nth-child(odd){border-right:1px solid var(--line)}
   .bento-axes h4{margin:.15em 0 .35em;font-size:1rem}
+  .bento-axes .k{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0}
   .gear-row,.check-row{display:grid;gap:8px;margin:1.1em 0;width:100%;max-width:100%;min-width:0}
   .gear-row{grid-template-columns:repeat(5,minmax(0,1fr))}
   .check-row{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -120,6 +134,10 @@
              border:1px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;
              box-shadow:0 8px 24px rgba(28,28,30,.12)}
   }
+  @media (max-width:800px){
+    .glance{grid-template-columns:1fr}
+    .glance>section+section{border-left:0;border-top:1px solid var(--line);padding-left:0}
+  }
   @media (max-width:640px){
     .wrap{padding:32px 18px 64px}
     h1{font-size:1.55rem}
@@ -136,7 +154,7 @@
     details{display:block!important}
     details>*{display:block!important}
     summary{display:none}
-    table,figure,.persona{page-break-inside:avoid;break-inside:avoid}
+    table,figure,.persona,.glance,.bento-axes{page-break-inside:avoid;break-inside:avoid}
     @page{size:A4 portrait;margin:18mm 16mm}
   }
 </style>
@@ -186,7 +204,7 @@
   </section>
 </div>
 
-<!-- 3. 等級量表：讀者不需回查文件就看得懂 -->
+<!-- 3. 等級量表：讀者不需回查文件就看得懂。class="on" 只是示意，要移到本次實際等級那一列。 -->
 <ol class="ladder">
   <li><b>LV0</b><span>問答靠人品：該補條件、該查核的任務，沒處理就採用答案</span></li>
   <li><b>LV1</b><span>換句話重問：察覺得到錯誤，靠換說法和多問幾次推進</span></li>

@@ -7,6 +7,7 @@
 ### 修正
 
 - **Claude Code 的續接摘要與 Skill prompt 被算成本人發言。** context 用盡後注入的 `This session is being continued from a previous conversation…`、Skill 載入時帶進來的 prompt 本體、排程喚醒與圖片說明，都以 user 身分寫進 transcript，會混進 `cases.md` 的「修正時說了什麼」與 `correction_turns`。`collect.py` 現在略過帶 `isCompactSummary`／`isMeta` 旗標的 user turn，舊版沒有旗標時以開頭字串備援。對話則數不變，本人發言數與修正訊號會下降。感謝 [dindins](https://github.com/dindins) 的 #4。
+- **報告骨架的總覽三欄變成直排。** `report-skeleton.html` 用了 `.lede`、`.glance`、`.do`、`.bento-axes .k` 卻沒定義樣式；從 `docs/assets/report.css` 同步回來（含 800px 以下改直排與列印不斷頁），並註明量表的 `class="on"` 要移到實際等級。同樣來自 #4。
 
 ## [0.4.6] - 2026-09-09
 
