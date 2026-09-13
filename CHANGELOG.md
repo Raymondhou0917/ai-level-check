@@ -2,6 +2,12 @@
 
 本專案的版本紀錄。格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)。
 
+## [Unreleased]
+
+### 修正
+
+- **Claude Code 的續接摘要與 Skill prompt 被算成本人發言。** context 用盡後注入的 `This session is being continued from a previous conversation…`、Skill 載入時帶進來的 prompt 本體、排程喚醒與圖片說明，都以 user 身分寫進 transcript，會混進 `cases.md` 的「修正時說了什麼」與 `correction_turns`。`collect.py` 現在略過帶 `isCompactSummary`／`isMeta` 旗標的 user turn，舊版沒有旗標時以開頭字串備援。對話則數不變，本人發言數與修正訊號會下降。感謝 [dindins](https://github.com/dindins) 的 #4。
+
 ## [0.4.6] - 2026-09-09
 
 ### 修正

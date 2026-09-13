@@ -90,6 +90,10 @@ NOISE_PREFIX = (
     # Codex 會把可安裝的 plugin 清單塞進 user message；
     # Claude Code 的 Stop hook 條件也是以 user 身分注入的。兩者都不是人打的字。
     "<recommended_plugins", "<plugins>", "A session-scoped Stop hook",
+    # Claude Code context 用盡時注入的續接摘要、Skill 載入時帶進來的 prompt 本體。
+    # 新版 transcript 另有 isCompactSummary／isMeta 旗標，這兩條是舊版沒有旗標時的備援。
+    "This session is being continued from a previous conversation",
+    "Base directory for this skill:",
 )
 NOISE_CONTAINS = (
     "# CLAUDE.md", "# AGENTS.md instructions", "<INSTRUCTIONS>",
@@ -519,6 +523,11 @@ def load_claude_code(root, since, until):
                 if mid and mid not in sess._usage_ids:
                     sess._usage_ids.add(mid)
                     add_usage(sess, msg.get("usage") or {})
+            # isMeta＝harness 代寫的 user turn（Skill prompt 本體、圖片說明、
+            # 排程喚醒、「Continue from where you left off.」）；isCompactSummary＝
+            # context 用盡後的續接摘要。兩者都以 user 身分寫入，但不是本人打的字。
+            if typ == "user" and (d.get("isMeta") or d.get("isCompactSummary")):
+                continue
             origin = d.get("origin") or {}
             marked = isinstance(origin, dict) and origin.get("kind") == "human"
             content = msg.get("content")
