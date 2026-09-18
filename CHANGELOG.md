@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+### 變更
+
+- **補齊公平判斷準則：觀察到 ≠ 現在還在發生。** 解決評估窗口前期已淘汰的舊行為被當成現況誤報的問題。列為「目前沒做好／不足」之前，必須確認該行為在評估窗口後半期仍有出現；只在前段出現且後續已改進或被新工具取代的，轉列為「期間內已改進的做法」（正面演進證據），不得列為現況不足。感謝 [dindins](https://github.com/dindins) 的 #4。
+- **LV4 引入實踐者與架構者分階，並明確 Golden Dataset 晉級條件。** 將模組化能力細分為「LV4 模組實踐者」（SOP/Skill 被多次複用）與「LV4+ 系統架構者」（隨附 Golden Dataset / Test Cases 邊界測試案例）。若未附測試案例，評為實踐者並提供友善晉級指引。
+- **LV5 擴充例外處理與系統韌性（Failover / Fallback）。** 明確將「模型額度耗盡/故障時自動切換備援入口（如 GPT 換 Antigravity/開源模型）」、「指數退避重試（Exponential Backoff）」與「預算/呼叫上限防呆」納入系統級營運的有效證據。
+
 ### 修正
 
 - **Claude Code 的續接摘要與 Skill prompt 被算成本人發言。** context 用盡後注入的 `This session is being continued from a previous conversation…`、Skill 載入時帶進來的 prompt 本體、排程喚醒與圖片說明，都以 user 身分寫進 transcript，會混進 `cases.md` 的「修正時說了什麼」與 `correction_turns`。`collect.py` 現在略過帶 `isCompactSummary`／`isMeta` 旗標的 user turn，舊版沒有旗標時以開頭字串備援。對話則數不變，本人發言數與修正訊號會下降。感謝 [dindins](https://github.com/dindins) 的 #4。
